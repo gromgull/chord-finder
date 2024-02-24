@@ -1,0 +1,43 @@
+.text {
+  font-family: sans;
+  alignment-baseline: middle;
+  text-anchor: middle;
+  font-size: 8pt;
+}
+
+.nut {
+  stroke: #000;
+  stroke-width: 3;
+  stroke-linecap:round;
+}
+
+.fret {
+  stroke: #000;
+  stroke-width: 1;
+}
+
+.finger {
+  stroke: #000;
+  stroke-width: 1;
+}
+
+.string {
+  stroke: #000;
+  stroke-width: 1;
+}
+
+.n1 {
+  fill: #d7191c;
+}
+.n2 {
+  fill: #fdae61;
+}
+.n3 {
+  fill: #ffffbf;
+}
+.n4 {
+  fill: #abdda4;
+}
+.n5 {
+  fill: #2b83ba;
+}
