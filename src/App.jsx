@@ -13,7 +13,7 @@ function ChordDiagram({instrument, fingers}) {
 
   return (
 	<svg viewBox="0 0 100 100" class={styles.chord}>
-	  <g transform={`translate(${50-w()/2} 15)`}>
+	  <g transform={`translate(${50-w()/2} 0)`}>
 		<line x1={0} y1={0} x2={w()} y2={0} class={styles.nut}/>
 
 		<For each={[...Array(5)]}>{(_, i) =>
@@ -55,20 +55,23 @@ function App() {
   console.log(fingers);
   return (
 	<div>
+	  <h1>Chords!</h1>
+	  <label>Instrument</label>
 	  <select onChange={e => setInstrument(INSTRUMENTS[e.currentTarget.value])}>
 		{ Object.keys(INSTRUMENTS).map(i => <option>{i}</option>) }
 	  </select><br/>
+	  <label>Mode</label>
 	  <select onChange={e => setMode(MODES[e.currentTarget.value])}>
 		{ Object.keys(MODES).map(i => <option>{i}</option>) }
 	  </select><br/>
-
+	  <label>Key</label>
 	  { Object.values(NOTES).map((n, i) =>
 		  <button classList={{[styles.active]: i==root()}} onClick={() => setRoot(i)}>{n}</button>
 	  )}
-	  <ul>
-	  <For each={[...Array(7)]}>{ (_,d) => <li>{1+d()} {scale().chord(d()).label}</li> }</For>
-	  </ul>
-	  <br/>
+	  <ol>
+		<For each={[...Array(scale().notes.length)]}>{ (_,d) => <li>{scale().chord(d()).label}</li> }</For>
+	  </ol>
+	  <h2>Scale</h2>
 	  <ChordDiagram instrument={instrument} fingers={fingers}/>
     </div>
   );
