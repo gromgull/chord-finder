@@ -2,42 +2,44 @@
   font-family: sans;
   alignment-baseline: middle;
   text-anchor: middle;
-  font-size: 8pt;
+  font-size: 3pt;
 }
 
 .nut {
   stroke: #000;
-  stroke-width: 3;
+  stroke-width: 2;
   stroke-linecap:round;
 }
 
 .fret {
   stroke: #000;
-  stroke-width: 1;
+  stroke-width: .5;
 }
 
 .finger {
   stroke: #000;
-  stroke-width: 1;
+  stroke-width: .5;
 }
 
 .string {
   stroke: #000;
-  stroke-width: 1;
+  stroke-width: .5;
 }
 
-.n1 {
-  fill: #d7191c;
+.n1 { fill: #a71b4b; }
+.n2 { fill: #e96f02; }
+.n3 { fill: #f9c25c; }
+.n4 { fill: #fefdbe; }
+.n5 { fill: #81dead; }
+.n6 { fill: #00a3b6; }
+.n7 { fill: #584b9f; }
+
+.chord {
+  margin: 10px;
+  width: 200px;
+  height: 300px;
 }
-.n2 {
-  fill: #fdae61;
-}
-.n3 {
-  fill: #ffffbf;
-}
-.n4 {
-  fill: #abdda4;
-}
-.n5 {
-  fill: #2b83ba;
+
+.active {
+  background: lightblue;
 }
