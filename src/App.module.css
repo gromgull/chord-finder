@@ -2,7 +2,7 @@
   font-family: sans;
   alignment-baseline: middle;
   text-anchor: middle;
-  font-size: 3pt;
+  font-size: 4pt;
 }
 
 .nut {
@@ -37,9 +37,36 @@
 .chord {
   margin: 10px;
   width: 200px;
-  height: 300px;
+
 }
 
 .active {
   background: cornflowerblue;
+}
+
+.chordblock {
+  float: left;
+}
+
+.chordblock svg {
+  display: block;
+}
+
+.chordblock button {
+  line-height: 1;
+  padding: 3px;
+}
+
+.chordblock div {
+  text-align: center;
+}
+
+.clear {
+  clear: both;
+}
+
+.footer {
+  border-top: 1px solid black;
+  padding-top: 10px;
+  color: dimgray;
 }

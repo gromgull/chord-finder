@@ -39,19 +39,61 @@ class Instrument {
 	this.strings = strings;
   }
 
-  fingerings(scale, max_fret) {
+  fingering(scale, max_fret) {
 	const res = [];
 
-	for(let i=0; i<max_fret; i++) {
-	  this.strings.forEach( (s,j) => {
-		const n = scale.notes.indexOf((s+i) % 12);
+	this.strings.forEach( (s,i) => {
+	  for(let j=0; j<max_fret; j++) {
+		const n = scale.notes.indexOf((s+j) % 12);
 		if (n != -1) {
-		  res.push(new Finger(j, i, n % 7, scale.label(scale.notes[n])));
+		  res.push(new Finger(i, j, n % 7, scale.label(scale.notes[n])));
 		}
-	  });
+	  }
+	});
+	return new Fingering(res);
+  }
+
+
+  string_fingerings(chord, options, fingering, res, i) {
+	const { max_fret, max_reach, force_root } = options;
+	if (i == this.strings.length) {
+	  const sounding = fingering.filter(f => f.color!==null);
+	  const notes = new Set(sounding.map( f => f.color ));
+	  //[...Array(chord.notes.length)].forEach((_,n) => notes.delete(n));
+	  if (notes.size == chord.notes.length && ( !force_root || sounding[0].color === 0 ))
+		res.push(new Fingering(fingering));
+	  return
 	}
+
+	const s = this.strings[i];
+
+	// don't play this string
+	if ( fingering.every(f => f.color === null) && s != chord.notes[0])
+		 this.string_fingerings(chord, options, [...fingering, new Finger(i, 0, null, null)], res, i+1);
+
+	for(let j=0; j<max_fret; j++) {
+	  const n = chord.notes.indexOf((s+j) % 12);
+	  if (n != -1) {
+		const max_dist = Math.max(...fingering.map( f => Math.abs(f.fret-j) ));
+		if (max_dist<=max_reach) {
+		  this.string_fingerings(chord, options, [...fingering, new Finger(i, j, n, NOTES[chord.notes[n]])], res, i+1);
+		}
+	  }
+	}
+
+
+  }
+
+  chord_fingerings(chord, options) {
+
+	const res = [];
+
+	this.string_fingerings(chord, options, [], res, 0);
+
+	console.log(res);
 	return res;
   }
+
 }
 
 class Finger {
@@ -61,6 +103,21 @@ class Finger {
 	this.color = color;
 	this.label = label;
   }
+}
+
+class Fingering {
+  constructor(fingers) {
+	this.fingers = fingers;
+  }
+
+  get min_fret() {
+	return Math.min(...this.fingers.filter(f => f.color !== null).map(f => f.fret));
+  }
+
+  get max_fret() {
+	return Math.max(...this.fingers.filter(f => f.color !== null).map(f => f.fret));
+  }
+
 }
 
 const TRIADS = {
@@ -89,6 +146,7 @@ class Chord {
 	const fingerprint = this.notes.map( n => mod12(n - root));
 	return NOTES[root]+TRIADS[fingerprint];
   }
+
 }
 
 const STEP = { W: 2, H: 1 };
@@ -133,8 +191,8 @@ const MODES = {
 
 
 const INSTRUMENTS = {
-  bass: new Instrument([4, 9, 2, 11]),
-  guitar: new Instrument([4, 9, 2, 7, 11, 12]),
+  bass: new Instrument([4, 9, 2, 7]),
+  guitar: new Instrument([4, 9, 2, 7, 11, 4]),
   ukulele: new Instrument([7, 12, 16, 21]),
 };
 
