@@ -1,5 +1,6 @@
 /*
 
+https://en.wikipedia.org/wiki/Pitch_class#Integer_notation
 Notes are numbers from 0-12
 
 0 C
@@ -62,6 +63,34 @@ class Finger {
   }
 }
 
+const TRIADS = {
+  [[0,4,7]]: '',  // major
+  [[0,3,7]]: 'm', // minor
+  [[0,4,8]]: 'aug', // augmented
+  [[0,3,6]]: 'dim', // diminished
+  [[0,2,7]]: 'sus2',
+  [[0,5,7]]: 'sus4',
+}
+
+function mod12(n) {
+  return ((n%12)+12)%12;
+}
+
+class Chord {
+
+  // notes in order, first is root
+
+  constructor(notes) {
+	this.notes = notes;
+  }
+
+  get label() {
+	const root = this.notes[0];
+	const fingerprint = this.notes.map( n => mod12(n - root));
+	return NOTES[root]+TRIADS[fingerprint];
+  }
+}
+
 const STEP = { W: 2, H: 1 };
 
 class Scale {
@@ -71,7 +100,9 @@ class Scale {
 
   static fromSteps(steps) {
 	let n = 0;
-	return new Scale([0, ...[...steps].map(s => {
+	steps = [...steps];
+	steps.pop();
+	return new Scale([0, ...steps.map(s => {
 	  n = (n + STEP[s]) % 12;
 	  return n;
 	})]);
@@ -83,6 +114,10 @@ class Scale {
 
   label(n) {
 	return NOTES[n];
+  }
+
+  chord(degree) {
+	return new Chord([0,2,4].map(d => this.notes[(degree+d)%this.notes.length]));
   }
 }
 

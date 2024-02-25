@@ -4,7 +4,7 @@ import styles from './App.module.css';
 
 import { Finger, MODES, NOTES, INSTRUMENTS } from './mt';
 
-function Chord({instrument, fingers}) {
+function ChordDiagram({instrument, fingers}) {
 
   const fret_spacing = 20;
   const nut_margins = 1;
@@ -46,7 +46,10 @@ function App() {
 
   const [instrument, setInstrument] = createSignal(INSTRUMENTS.bass);
 
-  const fingers = () => instrument().fingerings(MODES.Ionian.transpose(root()), 6);
+  const [mode, setMode] = createSignal(MODES.Ionian);
+
+  const scale = () => mode().transpose(root());
+  const fingers = () => instrument().fingerings(scale(), 6);
 
   console.log(instrument());
   console.log(fingers);
@@ -55,11 +58,18 @@ function App() {
 	  <select onChange={e => setInstrument(INSTRUMENTS[e.currentTarget.value])}>
 		{ Object.keys(INSTRUMENTS).map(i => <option>{i}</option>) }
 	  </select><br/>
+	  <select onChange={e => setMode(MODES[e.currentTarget.value])}>
+		{ Object.keys(MODES).map(i => <option>{i}</option>) }
+	  </select><br/>
+
 	  { Object.values(NOTES).map((n, i) =>
 		  <button classList={{[styles.active]: i==root()}} onClick={() => setRoot(i)}>{n}</button>
 	  )}
+	  <ul>
+	  <For each={[...Array(7)]}>{ (_,d) => <li>{1+d()} {scale().chord(d()).label}</li> }</For>
+	  </ul>
 	  <br/>
-	  <Chord instrument={instrument} fingers={fingers}/>
+	  <ChordDiagram instrument={instrument} fingers={fingers}/>
     </div>
   );
 }
