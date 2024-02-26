@@ -49,10 +49,10 @@ function ChordDiagram({instrument, fingering, no_frets}) {
   );
 }
 
-function ChordVariations({scale, degree, instrument}) {
+function ChordVariations({scale, degree, instrument, force_root}) {
   const [n, setN] = createSignal(0);
   const chord = () => scale().chord(degree());
-  const fingerings = () => instrument().chord_fingerings(chord(), { max_fret: 12, max_reach: 3, force_root: true });
+  const fingerings = () => instrument().chord_fingerings(chord(), { max_fret: 12, max_reach: 3, force_root: force_root() });
   const fingering = () => fingerings()[n()];
   return (
 	<div class={styles.chordblock}>
@@ -69,6 +69,8 @@ function ChordVariations({scale, degree, instrument}) {
 function App() {
 
   const [root, setRoot] = createSignal(0);
+  const [force_root, setForce_root] = createSignal(true);
+
 
   const [instrument, setInstrument] = createSignal(INSTRUMENTS.guitar);
 
@@ -97,8 +99,10 @@ function App() {
 		</fieldset>
 		<div>
 		  <h2>Chords</h2>
+		  <label><input type="checkbox" checked={force_root()} onChange={e => setForce_root(e.currentTarget.checked)}/> Force Root</label>
+		  <br/>
 		  <For each={[...Array(scale().notes.length)]}>{ (_,d) =>
-			<ChordVariations scale={scale} instrument={instrument} degree={d} />
+			<ChordVariations scale={scale} instrument={instrument} degree={d} force_root={force_root} />
 		  }</For>
 		</div>
 		<br class={styles.clear}/>

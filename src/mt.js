@@ -90,7 +90,6 @@ class Instrument {
 
 	this.string_fingerings(chord, options, [], res, 0);
 
-	console.log(res);
 	return res;
   }
 
