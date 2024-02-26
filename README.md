@@ -1,6 +1,6 @@
 # Chord Finder
 
-A small web-app for finding scales and chords on stringed instruments.
+A small web-app for finding scales and chords on stringed instruments. [Try it here](https://gromgull.github.io/chord-finder/)
 
 ![screenshot](/screenshot.png)
 
