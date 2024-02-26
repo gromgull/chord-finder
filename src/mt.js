@@ -67,9 +67,11 @@ class Instrument {
 
 	const s = this.strings[i];
 
+
+	//if ( fingering.every(f => f.color === null) && s != chord.notes[0])
+	// TODO: filter skip strings?
 	// don't play this string
-	if ( fingering.every(f => f.color === null) && s != chord.notes[0])
-		 this.string_fingerings(chord, options, [...fingering, new Finger(i, 0, null, null)], res, i+1);
+	this.string_fingerings(chord, options, [...fingering, new Finger(i, 0, null, null)], res, i+1);
 
 	for(let j=0; j<max_fret; j++) {
 	  const n = chord.notes.indexOf((s+j) % 12);
@@ -90,7 +92,8 @@ class Instrument {
 
 	this.string_fingerings(chord, options, [], res, 0);
 
-	return res;
+	// filter out places where we just mute strings we could have played
+	return res.filter( fs => !res.some( other => fs != other && fs.isSubSetOf(other) ));
   }
 
 }
@@ -107,14 +110,23 @@ class Finger {
 class Fingering {
   constructor(fingers) {
 	this.fingers = fingers;
+	this.signature = this.fingers.map( f => f.color == null ? 'x' : f.fret ).join('|')
   }
 
   get min_fret() {
-	return Math.min(...this.fingers.filter(f => f.color !== null).map(f => f.fret));
+	return Math.min(...this.sounding.map(f => f.fret));
   }
 
   get max_fret() {
-	return Math.max(...this.fingers.filter(f => f.color !== null).map(f => f.fret));
+	return Math.max(...this.sounding.map(f => f.fret));
+  }
+
+  get sounding() {
+	return this.fingers.filter(f => f.color !== null)
+  }
+
+  isSubSetOf(other) {
+	return this.sounding.every( f => other.sounding.some( o => f.string == o.string && f.fret == o.fret ));
   }
 
 }
