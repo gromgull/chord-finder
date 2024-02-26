@@ -76,3 +76,10 @@
   padding-top: 10px;
   color: dimgray;
 }
+
+.roman {
+  font-weight: normal;
+  color: dimgray;
+  font-size: smaller;
+  margin-left: 30px;
+}

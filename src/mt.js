@@ -152,10 +152,17 @@ class Chord {
 	this.notes = notes;
   }
 
+  get root() {
+	return this.notes[0];
+  }
+
+  get type() {
+	const fingerprint = this.notes.map( n => mod12(n - this.root));
+	return TRIADS[fingerprint];
+  }
+
   get label() {
-	const root = this.notes[0];
-	const fingerprint = this.notes.map( n => mod12(n - root));
-	return NOTES[root]+TRIADS[fingerprint];
+	return NOTES[this.root]+this.type;
   }
 
 }
@@ -191,20 +198,21 @@ class Scale {
 }
 
 const MODES = {
-  "Ionian": Scale.fromSteps("WWHWWWH"), // major
+  "Ionian / Major": Scale.fromSteps("WWHWWWH"), // major
   "Dorian": Scale.fromSteps("WHWWWHW"),
   "Phrygian": Scale.fromSteps("HWWWHWW"),
   "Lydian": Scale.fromSteps("WWWHWWH"),
   "Mixolydian": Scale.fromSteps("WWHWWHW"),
-  "Aeolian": Scale.fromSteps("WHWWHWW"), // natural minor
+  "Aeolian / Minor": Scale.fromSteps("WHWWHWW"), // natural minor
   "Locrian": Scale.fromSteps("HWWHWWW"),
 }
 
 
 const INSTRUMENTS = {
-  bass: new Instrument([4, 9, 2, 7]),
   guitar: new Instrument([4, 9, 2, 7, 11, 4]),
-  ukulele: new Instrument([7, 12, 16, 21]),
+  bass: new Instrument([4, 9, 2, 7]),
+  ukulele: new Instrument([7, 0, 4, 9]),
+  banjo: new Instrument([2, 7, 11, 2]),
 };
 
 export { Finger, NOTES, MODES, INSTRUMENTS };
