@@ -1,3 +1,19 @@
+@media (max-width: 767px) {
+  body {
+	padding-left: 5px;
+  }
+
+  .chordblock {
+	width: 100%;
+  }
+}
+
+@media (min-width: 767px) {
+  .chordblock {
+	width: 250px;
+  }
+}
+
 .text {
   alignment-baseline: middle;
   text-anchor: middle;
@@ -42,7 +58,7 @@
 
 .chord {
   margin: 10px;
-  width: 200px;
+  width: 100%;
 
 }
 
@@ -52,10 +68,13 @@
 
 .chordblock {
   float: left;
+  margin-right: 20px;
 }
 
 .chordblock svg {
   display: block;
+  width: 80%;
+  margin: auto;
 }
 
 .chordblock button {
@@ -81,5 +100,9 @@
   font-weight: normal;
   color: dimgray;
   font-size: smaller;
-  margin-left: 30px;
+  margin-right: 20px;
+}
+
+.scale svg {
+  width: 300px;
 }

@@ -16,8 +16,8 @@ function ChordDiagram({instrument, fingering, no_frets}) {
   const end_fret = () => fingering().min_fret+no_frets;
 
   return (
-	<svg preserveAspectRatio="xMidYMin meet" viewBox={`0 0 ${w()+nut_margins*2} ${20+fret_spacing*no_frets}`} style={{height: no_frets*35+'px'}}class={styles.chord}>
-	  <g transform={`translate(0 15)`}>
+	<svg viewBox={`0 0 ${30+w()+nut_margins*2} ${20+fret_spacing*no_frets}`} class={styles.chord}>
+	  <g transform={`translate(15 15)`}>
 
 		<Show when={start_fret() == 1}><line x1={0} y1={0} x2={w()} y2={0} class={styles.nut}/></Show>
 
@@ -58,9 +58,9 @@ function Roman({degree, type}) {
   };
   return (
 	<span class={styles.roman}>
-	<Show when={type !== 'm'} fallback={roman[degree].toLowerCase()}>
-	  {roman[degree]}<sup>{types[type]}</sup>
-	</Show>
+	  <Show when={type !== 'm'} fallback={roman[degree].toLowerCase()}>
+		{roman[degree]}<sup>{types[type]}</sup>
+	  </Show>
 	</span>
   );
 }
@@ -72,10 +72,10 @@ function ChordVariations({scale, degree, instrument, force_root}) {
   const fingering = () => fingerings()[n()];
   return (
 	<div class={styles.chordblock}>
-	  <h3>{chord().label} <Roman degree={degree} type={chord().type}/></h3>
+	  <h3><Roman degree={degree} type={chord().type}/>{chord().label}</h3>
 	  <span>{chord().notes.map(n => NOTES[n]).join(' - ')}</span>
-	  <ChordDiagram instrument={instrument} fingering={fingering} no_frets={5} />
 	  <div>
+		<ChordDiagram instrument={instrument} fingering={fingering} no_frets={5} />
 		<button disabled={n()==0} onClick={() => setN(n()-1)}>❮</button>
 		({n()+1}/{fingerings().length})
 		<button disabled={n()>=fingerings().length-1} onClick={() => setN(n()+1)}>❯</button>
@@ -126,7 +126,9 @@ function App() {
 		</div>
 		<br class={styles.clear}/>
 		<h2>Scale</h2>
-		<ChordDiagram instrument={instrument} fingering={fingering} no_frets={8}/>
+		<div class={styles.scale}>
+		  <ChordDiagram instrument={instrument} fingering={fingering} no_frets={8}/>
+		</div>
 	  </div>
 	  <div class={styles.footer}>
 		Chord finder! / <a href="https://github.com/gromgull/chord-finder">GitHub</a> / AGPL License
