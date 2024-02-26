@@ -36,7 +36,7 @@ function ChordDiagram({instrument, fingering, no_frets}) {
 			const x = nut_margins+f.string*10;
 			const y = (f.fret-start_fret()+1)*fret_spacing-fret_spacing/2 + (f.fret == 0 ? 4 : 0);
 			return <>
-					 <Show when={f.color !== null} fallback={<text class={styles.text} x={x} y={y}>⨯</text>}>
+					 <Show when={f.color !== null} fallback={<text class={styles.textx} x={x} y={y}>⨯</text>}>
 					   <circle class={styles.finger+' '+styles['n'+(1+f.color)]} cx={x} cy={y} r="5" />
 					   <text class={styles.text} x={x} y={y}>{f.label}</text>
 					 </Show>

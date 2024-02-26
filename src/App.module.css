@@ -1,8 +1,14 @@
 .text {
-  font-family: sans;
   alignment-baseline: middle;
   text-anchor: middle;
   font-size: 4pt;
+}
+
+.textx {
+  alignment-baseline: middle;
+  text-anchor: middle;
+  font-size: 6pt;
+  font-weight: bold;
 }
 
 .nut {
