@@ -14,38 +14,50 @@
   }
 }
 
-.text {
+
+.chord {
+  margin: 10px;
+  width: 100%;
+}
+
+.chord .text {
   alignment-baseline: middle;
   text-anchor: middle;
   font-size: 4pt;
 }
 
-.textx {
+.chord .textx {
   alignment-baseline: middle;
   text-anchor: middle;
   font-size: 6pt;
   font-weight: bold;
 }
 
-.nut {
+.chord .nut {
   stroke: #000;
   stroke-width: 2;
-  stroke-linecap:round;
+  stroke-linecap: round;
 }
 
-.fret {
+.chord .fret {
   stroke: #000;
   stroke-width: .5;
 }
 
-.finger {
+.chord .finger {
   stroke: #000;
   stroke-width: .5;
 }
 
-.string {
+.chord .string {
   stroke: #000;
   stroke-width: .5;
+}
+
+.chord .bar {
+  stroke: #666;
+  stroke-width: 5;
+  stroke-linecap: round;
 }
 
 .n1 { fill: #a71b4b; }
@@ -56,11 +68,6 @@
 .n6 { fill: #00a3b6; }
 .n7 { fill: #584b9f; }
 
-.chord {
-  margin: 10px;
-  width: 100%;
-
-}
 
 .active {
   background: cornflowerblue;

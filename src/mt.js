@@ -57,28 +57,36 @@ class Instrument {
   string_fingerings(chord, options, fingering, res, i) {
 	const { max_fret, max_reach, force_root } = options;
 	if (i == this.strings.length) {
-	  const sounding = fingering.filter(f => f.color!==null);
+	  const sounding = fingering.sounding;
 	  const notes = new Set(sounding.map( f => f.color ));
 	  //[...Array(chord.notes.length)].forEach((_,n) => notes.delete(n));
 	  if (notes.size == chord.notes.length && ( !force_root || sounding[0].color === 0 ))
-		res.push(new Fingering(fingering));
+		res.push(fingering);
 	  return
 	}
 
 	const s = this.strings[i];
 
+	const bar = fingering.bar;
 
 	//if ( fingering.every(f => f.color === null) && s != chord.notes[0])
 	// TODO: filter skip strings?
 	// don't play this string
-	this.string_fingerings(chord, options, [...fingering, new Finger(i, 0, null, null)], res, i+1);
+	if (!bar) {
+	  this.string_fingerings(chord, options, fingering.push(new Finger(i, 0, null, null)), res, i+1);
+	}
 
-	for(let j=0; j<max_fret; j++) {
-	  const n = chord.notes.indexOf((s+j) % 12);
+	for(let fret=bar ? bar.fret : 0; fret<max_fret; fret++) {
+	  const n = chord.notes.indexOf((s+fret) % 12);
 	  if (n != -1) {
-		const max_dist = Math.max(...fingering.map( f => Math.abs(f.fret-j) ));
+		const max_dist = Math.max(...fingering.sounding.map( f => Math.abs(f.fret-fret) ));
 		if (max_dist<=max_reach) {
-		  this.string_fingerings(chord, options, [...fingering, new Finger(i, j, n, NOTES[chord.notes[n]])], res, i+1);
+		  if (!bar && fret>0 && i!=this.strings.length-1) {
+			// we could try bar'ing on this string
+			this.string_fingerings(chord, options, fingering.push(new Finger(i, fret, n, NOTES[chord.notes[n]], true)), res, i+1);
+		  }
+
+		  this.string_fingerings(chord, options, fingering.push(new Finger(i, fret, n, NOTES[chord.notes[n]])), res, i+1);
 		}
 	  }
 	}
@@ -90,27 +98,41 @@ class Instrument {
 
 	const res = [];
 
-	this.string_fingerings(chord, options, [], res, 0);
-
+	this.string_fingerings(chord, options, new Fingering([]), res, 0);
+	console.log(res);
 	// filter out places where we just mute strings we could have played
-	return res.filter( fs => !res.some( other => fs != other && fs.isSubSetOf(other) ));
+	const filtered = res.filter( fs => !fs.pointless_bar && !res.some( other => fs != other && fs.isSubSetOf(other) ));
+	filtered.sort( Fingering.sorter );
+	console.log(filtered)
+	return filtered;
   }
 
 }
 
 class Finger {
-  constructor(string, fret, color, label) {
+  constructor(string, fret, color, label, bar) {
 	this.string = string;
 	this.fret = fret;
 	this.color = color;
 	this.label = label;
+	this.bar = bar;
+  }
+
+  get mute() {
+	return this.color == null;
   }
 }
 
 class Fingering {
   constructor(fingers) {
 	this.fingers = fingers;
-	this.signature = this.fingers.map( f => f.color == null ? 'x' : f.fret ).join('|')
+	this.signature = this.fingers.map( f => f.mute ? 'x' : f.fret + (f.bar?'b':'') ).join('|')
+  }
+
+  static sorter(a,b) {
+	if (!a.bar && b.bar) return -1;
+	if (a.bar && !b.bar) return 1;
+	return a.min_fret - b.min_fret;
   }
 
   get min_fret() {
@@ -121,12 +143,33 @@ class Fingering {
 	return Math.max(...this.sounding.map(f => f.fret));
   }
 
+  get no_fingers() {
+	return this.fingers.filter( f => !f.mute && (!f.bar || f.bar.fret != f.fret) ).length;
+  }
+
   get sounding() {
-	return this.fingers.filter(f => f.color !== null)
+	return this.fingers.filter(f => !f.mute)
+  }
+
+  get bar() {
+	return this.fingers.flatMap( f => f.bar ? [f] : [])[0];
+  }
+
+  get pointless_bar() {
+	const bar = this.bar;
+	if (!bar) return false;
+	return !this.fingers.some( f => f.string>bar.string && f.fret == bar.fret);
+  }
+
+  push(f) {
+	return new Fingering([...this.fingers, f]);
   }
 
   isSubSetOf(other) {
-	return this.sounding.every( f => other.sounding.some( o => f.string == o.string && f.fret == o.fret ));
+	const res = this.sounding.every( f => other.sounding.some( o => f.string == o.string && f.fret == o.fret ));
+	if (res && this.bar && !other.bar) return false;
+	if (res && this.bar && other.bar && this.bar.fret == other.bar.fret && this.bar.string<other.bar.string) return false;
+	return res;
   }
 
 }
