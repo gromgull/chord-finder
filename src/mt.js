@@ -175,14 +175,33 @@ class Fingering {
 
 }
 
-const TRIADS = {
-  [[0,4,7]]: '',  // major
-  [[0,3,7]]: 'm', // minor
-  [[0,4,8]]: 'aug', // augmented
-  [[0,3,6]]: 'dim', // diminished
-  [[0,2,7]]: 'sus2',
-  [[0,5,7]]: 'sus4',
+class Triad {
+  constructor(name, notes, symbol) {
+	this.name = name;
+	this.notes = notes;
+	this.symbol = symbol;
+  }
 }
+
+const TRIADS = [
+  new Triad('major', [0,4,7], ''),
+  new Triad('minor', [0,3,7], 'm'),
+  new Triad('augmented', [0,4,8], 'aug'),
+  new Triad('diminished', [0,3,6], 'dim'),
+  new Triad('sus2', [0,2,7], 'sus2'),
+  new Triad('sus4', [0,5,7], 'sus4'),
+];
+
+const SEVENS = [
+  ['none', null],
+  ['6', 9],
+  ['7', 10],
+  ['maj7', 11],
+];
+
+const SEVENS_LOOKUP = Object.fromEntries( SEVENS.map( s => [s[1], s[0]] ) );
+
+const TRIADS_LOOKUP = Object.fromEntries( TRIADS.map( t => [t.notes, t.symbol] ));
 
 function mod12(n) {
   return ((n%12)+12)%12;
@@ -202,7 +221,7 @@ class Chord {
 
   get type() {
 	const fingerprint = this.notes.map( n => mod12(n - this.root));
-	return TRIADS[fingerprint];
+	return (fingerprint.length>3?SEVENS_LOOKUP[fingerprint[3]]:'')+TRIADS_LOOKUP[fingerprint.slice(0,3)];
   }
 
   get label() {
@@ -259,4 +278,4 @@ const INSTRUMENTS = {
   banjo: new Instrument([2, 7, 11, 2]),
 };
 
-export { Finger, NOTES, MODES, INSTRUMENTS };
+export { Chord, Finger, NOTES, TRIADS, MODES, INSTRUMENTS };
