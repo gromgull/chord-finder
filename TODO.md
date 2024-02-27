@@ -4,7 +4,7 @@
 * more chord finder, 9/11/13s etc.
 * scale diagram horizontal
 * more instruments / custom tunings
-* favourite in localStorage
+* chord/scale favourite in localStorage
 
 * face the fact that people don't have infinite fingers
 * allow open strings
