@@ -87,7 +87,7 @@ function ChordVariations({scale, degree, instrument, force_root}) {
   );
 }
 
-function App() {
+function Scales() {
 
   const [root, setRoot] = createSignal(0);
   const [force_root, setForce_root] = createSignal(true);
@@ -102,42 +102,36 @@ function App() {
 
   return (
 	<>
-	  <div class={styles.content}>
-		<h1>Chords!</h1>
-		<fieldset>
-		  <label>Instrument</label>
-		  <select onChange={e => setInstrument(INSTRUMENTS[e.currentTarget.value])}>
-			{ Object.keys(INSTRUMENTS).map(i => <option value={i} selected={instrument() == INSTRUMENTS[i]}>{i} { INSTRUMENTS[i].strings.map( s => NOTES[s] ).join(' - ') }</option>) }
-		  </select>
+	  <fieldset>
+		<label>Instrument</label>
+		<select onChange={e => setInstrument(INSTRUMENTS[e.currentTarget.value])}>
+		  { Object.keys(INSTRUMENTS).map(i => <option value={i} selected={instrument() == INSTRUMENTS[i]}>{i} { INSTRUMENTS[i].strings.map( s => NOTES[s] ).join(' - ') }</option>) }
+		</select>
 
-		  <label>Mode</label>
-		  <select onChange={e => setMode(MODES[e.currentTarget.value])}>
-			{ Object.keys(MODES).map(i => <option>{i}</option>) }
-		  </select><br/>
-		  <label>Key</label>
-		  { Object.values(NOTES).map((n, i) =>
-			<button classList={{[styles.active]: i==root()}} onClick={() => setRoot(i)}>{n}</button>
-		  )}
-		</fieldset>
-		<div>
-		  <h2>Chords</h2>
-		  <label><input type="checkbox" checked={force_root()} onChange={e => setForce_root(e.currentTarget.checked)}/> Force Root Bass</label>
-		  <br/>
-		  <For each={[...Array(scale().notes.length).keys()]}>{ d =>
-			<ChordVariations scale={scale} instrument={instrument} degree={d} force_root={force_root} />
-		  }</For>
-		</div>
-		<br class={styles.clear}/>
-		<h2>Scale</h2>
-		<div class={styles.scale}>
-		  <ChordDiagram instrument={instrument} fingering={fingering} no_frets={8}/>
-		</div>
+		<label>Mode</label>
+		<select onChange={e => setMode(MODES[e.currentTarget.value])}>
+		  { Object.keys(MODES).map(i => <option>{i}</option>) }
+		</select><br/>
+		<label>Key</label>
+		{ Object.values(NOTES).map((n, i) =>
+		  <button classList={{[styles.active]: i==root()}} onClick={() => setRoot(i)}>{n}</button>
+		)}
+	  </fieldset>
+	  <div>
+		<h2>Chords</h2>
+		<label><input type="checkbox" checked={force_root()} onChange={e => setForce_root(e.currentTarget.checked)}/> Force Root Bass</label>
+		<br/>
+		<For each={[...Array(scale().notes.length).keys()]}>{ d =>
+		  <ChordVariations scale={scale} instrument={instrument} degree={d} force_root={force_root} />
+		}</For>
 	  </div>
-	  <div class={styles.footer}>
-		Chord finder! / <a href="https://github.com/gromgull/chord-finder">GitHub</a> / AGPL License
+	  <br class={styles.clear}/>
+	  <h2>Scale</h2>
+	  <div class={styles.scale}>
+		<ChordDiagram instrument={instrument} fingering={fingering} no_frets={8}/>
 	  </div>
     </>
   );
 }
 
-export default App;
+export default Scales;
