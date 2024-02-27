@@ -17,7 +17,7 @@ const SEVENS = [
 
 function createChord(root, triad, seven) {
   const notes = triad.notes.map( n => ( n+root ) % 12 );
-  if (seven) notes.push(seven);
+  if (seven) notes.push((seven+root) % 12);
   return new Chord(notes);
 }
 
