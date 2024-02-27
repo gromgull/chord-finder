@@ -101,7 +101,8 @@ class Instrument {
 	this.string_fingerings(chord, options, new Fingering([]), res, 0);
 	console.log(res);
 	// filter out places where we just mute strings we could have played
-	const filtered = res.filter( fs => !fs.pointless_bar && !res.some( other => fs != other && fs.isSubSetOf(other) ));
+	let filtered = res.filter(fs => !fs.pointless_bar);
+	filtered = filtered.filter( fs => !filtered.some( other => fs != other && fs.isSubSetOf(other) ));
 	filtered.sort( Fingering.sorter );
 	console.log(filtered)
 	return filtered;
