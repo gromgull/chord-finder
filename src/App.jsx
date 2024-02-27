@@ -76,8 +76,8 @@ function ChordVariations({scale, degree, instrument, force_root}) {
   return (
 	<div class={styles.chordblock}>
 	  <h3><Roman degree={degree} type={chord().type}/>{chord().label}</h3>
-	  <span>{chord().notes.map(n => NOTES[n]).join(' - ')}</span>
 	  <div>
+		<span>{chord().notes.map(n => NOTES[n]).join(' - ')}</span>
 		<ChordDiagram instrument={instrument} fingering={fingering} no_frets={5} />
 		<button disabled={n()==0} onClick={() => setN(n()-1)}>❮</button>
 		({n()+1}/{fingerings().length})
