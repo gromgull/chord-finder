@@ -6,6 +6,7 @@ import './index.css';
 import Home from './Home';
 import Scales from './Scales';
 import Chords from './Chords';
+import { Settings } from './Settings';
 
 import styles from './App.module.css';
 import logo from "./assets/guitar.png";
@@ -18,24 +19,33 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
   );
 }
 
-const App = props => (
+function App(props) {
+  let menuBtn;
+  return (
   <>
+	<header class={styles.header}>
+	  <a href="" class={styles.logo}><img width="32" src={logo} alt="chords logo" />Chord Finder</a>
+	  <input ref={menuBtn} class={styles.menuBtn} type="checkbox" id="menu-btn" />
+	  <label class={styles.menuIcon} for="menu-btn"><span class={styles.navicon}></span></label>
+	  <ul class={styles.menu}>
+		<li><a onClick={ () => menuBtn.click() } href="/scales">Scales</a></li>
+		<li><a onClick={ () => menuBtn.click() } href="/chords">Chords</a></li>
+		<li><a onClick={ () => menuBtn.click() } href="/settings">Settings</a></li>
+	  </ul>
+	</header>
 	<div class={styles.content}>
-	  <div class={styles.header}>
-		<h1><img src={logo} alt="chords logo" />Chords!</h1>
-		<a href="/scales">Scales</a> <a href="/chords">Chords</a>
-		<hr/>
-	  </div>
       {props.children}
 	</div>
 	<div class={styles.footer}>
 	  Chord finder! / <a href="https://github.com/gromgull/chord-finder">GitHub</a> / AGPL License
 	</div>
   </>
-)
+);
+}
 
 render(() => <HashRouter root={App}>
     <Route path="/scales" component={Scales} />
     <Route path="/chords" component={Chords} />
+    <Route path="/settings" component={Settings} />
     <Route path="/" component={Home} />
   </HashRouter>, root);

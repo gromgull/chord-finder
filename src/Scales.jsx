@@ -4,6 +4,8 @@ import styles from './App.module.css';
 
 import { Finger, MODES, NOTES, INSTRUMENTS } from './mt';
 
+import { instrument, force_root } from './Settings';
+
 function ChordDiagram({instrument, fingering, no_frets}) {
 
   const fret_spacing = 20;
@@ -90,10 +92,6 @@ function ChordVariations({scale, degree, instrument, force_root}) {
 function Scales() {
 
   const [root, setRoot] = createSignal(0);
-  const [force_root, setForce_root] = createSignal(true);
-
-
-  const [instrument, setInstrument] = createSignal(INSTRUMENTS.guitar);
 
   const [mode, setMode] = createSignal(MODES['Ionian / Major']);
 
@@ -103,11 +101,6 @@ function Scales() {
   return (
 	<>
 	  <fieldset>
-		<label>Instrument</label>
-		<select onChange={e => setInstrument(INSTRUMENTS[e.currentTarget.value])}>
-		  { Object.keys(INSTRUMENTS).map(i => <option value={i} selected={instrument() == INSTRUMENTS[i]}>{i} { INSTRUMENTS[i].strings.map( s => NOTES[s] ).join(' - ') }</option>) }
-		</select>
-
 		<label>Mode</label>
 		<select onChange={e => setMode(MODES[e.currentTarget.value])}>
 		  { Object.keys(MODES).map(i => <option>{i}</option>) }
@@ -119,7 +112,6 @@ function Scales() {
 	  </fieldset>
 	  <div>
 		<h2>Chords</h2>
-		<label><input type="checkbox" checked={force_root()} onChange={e => setForce_root(e.currentTarget.checked)}/> Force Root Bass</label>
 		<br/>
 		<For each={[...Array(scale().notes.length).keys()]}>{ d =>
 		  <ChordVariations scale={scale} instrument={instrument} degree={d} force_root={force_root} />
