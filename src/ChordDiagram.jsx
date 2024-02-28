@@ -9,7 +9,7 @@ function ChordDiagram({instrument, fingering, no_frets}) {
 
   const start_fret = () => Math.max(1, fingering() ? fingering().min_fret : 0);
 
-  const end_fret = () => fingering().min_fret+no_frets;
+  const end_fret = () => start_fret+no_frets;
 
   return (
 	<svg viewBox={`0 0 ${30+w()+nut_margins*2} ${20+fret_spacing*no_frets}`} class={styles.chord}>
@@ -30,7 +30,7 @@ function ChordDiagram({instrument, fingering, no_frets}) {
 		<Show when={fingering()}>
 		  <For each={fingering().fingers}>{f => {
 			const x = nut_margins+f.string*10;
-			const y = f.mute ? -fret_spacing+fret_spacing/2+4 : (f.fret-start_fret()+1)*fret_spacing-fret_spacing/2 + (f.fret == 0 ? 4 : 0);
+			const y = f.mute || f.fret == 0 ? -fret_spacing+fret_spacing/2+4 : (f.fret-start_fret()+1)*fret_spacing-fret_spacing/2 + (f.fret == 0 ? 4 : 0);
 			return <>
 					 <Show when={f.bar}>
 					   <line x1={x} y1={y} y2={y} x2={nut_margins+instrument().strings.length*10-10} class={styles.bar} />

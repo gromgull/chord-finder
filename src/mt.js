@@ -82,8 +82,7 @@ class Instrument {
 	for(let fret=bar ? bar.fret : 0; fret<max_fret; fret++) {
 	  const n = chord.notes.indexOf((s+fret) % 12);
 	  if (n != -1) {
-		const max_dist = Math.max(...fingering.sounding.map( f => Math.abs(f.fret-fret) ));
-		if (max_dist<=max_reach) {
+		if (fingering.max_reach(fret)<=max_reach) {
 		  if (!bar && fret>0 && i!=this.strings.length-1) {
 			// we could try bar'ing on this string
 			this.string_fingerings(chord, options, fingering.push(new Finger(i, fret, n, NOTES[chord.notes[n]], true)), res, i+1);
@@ -136,11 +135,16 @@ class Fingering {
   static sorter(a,b) {
 	if (!a.bar && b.bar) return -1;
 	if (a.bar && !b.bar) return 1;
-	return a.min_fret - b.min_fret;
+	return a.min_sounding_fret - b.min_sounding_fret;
+  }
+
+  get min_sounding_fret() {
+	return Math.min(...this.sounding.map(f => f.fret));
   }
 
   get min_fret() {
-	return Math.min(...this.sounding.map(f => f.fret));
+	if (!this.fingered.length) return 0;
+	return Math.min(...this.fingered.map(f => f.fret));
   }
 
   get max_fret() {
@@ -154,6 +158,15 @@ class Fingering {
   get sounding() {
 	return this.fingers.filter(f => !f.mute)
   }
+
+  get fingered() {
+	return this.sounding.filter( f => f.fret );
+  }
+
+  max_reach(fret) {
+	return Math.max(...this.fingered.map( f => Math.abs(f.fret-fret) ));
+  }
+
 
   get bar() {
 	return this.fingers.flatMap( f => f.bar ? [f] : [])[0];
