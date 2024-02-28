@@ -262,6 +262,10 @@ p {
   color: #555;
 }
 
+p a {
+  text-decoration: underline;
+}
+
 label {
   font-weight: 500;
 }
