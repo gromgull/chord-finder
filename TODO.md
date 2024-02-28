@@ -6,5 +6,4 @@
 * more instruments / custom tunings
 * chord/scale favourite in localStorage
 
-* face the fact that people don't have infinite fingers
 * allow open strings

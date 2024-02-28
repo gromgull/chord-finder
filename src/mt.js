@@ -55,7 +55,10 @@ class Instrument {
 
 
   string_fingerings(chord, options, fingering, res, i) {
-	const { max_fret, max_reach, force_root } = options;
+	const { max_fret, max_reach, force_root, max_fingers } = options;
+
+	if (fingering.no_fingers > (max_fingers || 4)) return;
+
 	if (i == this.strings.length) {
 	  const sounding = fingering.sounding;
 	  const notes = new Set(sounding.map( f => f.color ));
