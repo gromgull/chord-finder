@@ -1,11 +1,11 @@
-import { createSignal, createEffect, createMemo, on } from "solid-js";
+import { createSignal, createEffect, createMemo } from "solid-js";
 
 import styles from './App.module.css';
 import logo from "./assets/guitar.png";
 
-import { Chord, Finger, TRIADS, NOTES, INSTRUMENTS } from './mt';
+import { Chord, Finger, TRIADS, NOTES } from './mt';
 
-import { instrument, force_root } from './Settings';
+import { options } from './Settings';
 import ChordDiagram from './ChordDiagram';
 
 const SEVENS = [
@@ -28,7 +28,7 @@ function Chords() {
 
   const chord = () => createChord(root(), triad(), seven());
 
-  const fingerings = createMemo(() => instrument().chord_fingerings(chord(), { max_fret: 12, max_reach: 3, force_root: force_root() }));
+  const fingerings = createMemo(() => options().instrument.chord_fingerings(chord(), options()));
 
   return (
 	<>
@@ -54,7 +54,7 @@ function Chords() {
 	  <For each={fingerings()}>{ (fingering, n) =>
 		<div class={styles.chordblock}>
 		  <div>
-			<ChordDiagram instrument={instrument} fingering={() => fingering} no_frets={5} />
+			<ChordDiagram instrument={options().instrument} fingering={() => fingering} no_frets={5} />
 			({n()+1}/{fingerings().length})
 		  </div>
 		</div>

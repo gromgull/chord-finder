@@ -2,9 +2,9 @@ import { createSignal, createEffect, createMemo, on } from "solid-js";
 
 import styles from './App.module.css';
 
-import { Finger, MODES, NOTES, INSTRUMENTS } from './mt';
+import { Finger, MODES, NOTES } from './mt';
 
-import { instrument, force_root } from './Settings';
+import { options } from './Settings';
 
 import ChordDiagram from './ChordDiagram';
 
@@ -24,10 +24,11 @@ function Roman({degree, type}) {
   );
 }
 
-function ChordVariations({scale, degree, instrument, force_root}) {
+function ChordVariations({scale, degree}) {
   const [n, setN] = createSignal(0);
   const chord = () => scale().chord(degree);
-  const fingerings = createMemo(() => instrument().chord_fingerings(chord(), { max_fret: 12, max_reach: 3, force_root: force_root() }));
+
+  const fingerings = createMemo(() => options().instrument.chord_fingerings(chord(), options()));
   const fingering = () => fingerings()[n()];
 
   createEffect( on(chord, () => setN(0)) );
@@ -37,7 +38,7 @@ function ChordVariations({scale, degree, instrument, force_root}) {
 	  <h3><Roman degree={degree} type={chord().type}/>{chord().label}</h3>
 	  <div>
 		<span>{chord().notes.map(n => NOTES[n]).join(' - ')}</span>
-		<ChordDiagram instrument={instrument} fingering={fingering} no_frets={5} />
+		<ChordDiagram instrument={options().instrument} fingering={fingering} no_frets={5} />
 		<button disabled={n()==0} onClick={() => setN(n()-1)}>❮</button>
 		({n()+1}/{fingerings().length})
 		<button disabled={n()>=fingerings().length-1} onClick={() => setN(n()+1)}>❯</button>
@@ -53,7 +54,7 @@ function Scales() {
   const [mode, setMode] = createSignal(MODES['Ionian / Major']);
 
   const scale = () => mode().transpose(root());
-  const fingering = () => instrument().fingering(scale(), 9);
+  const fingering = () => options().instrument.fingering(scale(), 9);
 
   return (
 	<>
@@ -71,13 +72,13 @@ function Scales() {
 		<h2>Chords</h2>
 		<br/>
 		<For each={[...Array(scale().notes.length).keys()]}>{ d =>
-		  <ChordVariations scale={scale} instrument={instrument} degree={d} force_root={force_root} />
+		  <ChordVariations scale={scale} degree={d} />
 		}</For>
 	  </div>
 	  <br class={styles.clear}/>
 	  <h2>Scale</h2>
 	  <div class={styles.scale}>
-		<ChordDiagram instrument={instrument} fingering={fingering} no_frets={8}/>
+		<ChordDiagram instrument={options().instrument} fingering={fingering} no_frets={8}/>
 	  </div>
     </>
   );

@@ -35,7 +35,8 @@ const NOTES = {
 
 
 class Instrument {
-  constructor(strings) {
+  constructor(name, strings) {
+	this.name = name;
 	this.strings = strings;
   }
 
@@ -82,7 +83,7 @@ class Instrument {
 	for(let fret=bar ? bar.fret : 0; fret<max_fret; fret++) {
 	  const n = chord.notes.indexOf((s+fret) % 12);
 	  if (n != -1) {
-		if (fingering.max_reach(fret)<=max_reach) {
+		if (fingering.max_reach(fret)<max_reach) {
 		  if (!bar && fret>0 && i!=this.strings.length-1) {
 			// we could try bar'ing on this string
 			this.string_fingerings(chord, options, fingering.push(new Finger(i, fret, n, NOTES[chord.notes[n]], true)), res, i+1);
@@ -101,12 +102,12 @@ class Instrument {
 	const res = [];
 
 	this.string_fingerings(chord, options, new Fingering([]), res, 0);
-	console.log(res);
+
 	// filter out places where we just mute strings we could have played
 	let filtered = res.filter(fs => !fs.pointless_bar);
 	filtered = filtered.filter( fs => !filtered.some( other => fs != other && fs.isSubSetOf(other) ));
 	filtered.sort( Fingering.sorter );
-	console.log(filtered)
+
 	return filtered;
   }
 
@@ -287,14 +288,14 @@ const MODES = {
 }
 
 
-const INSTRUMENTS = {
-  Guitar: new Instrument([4, 9, 2, 7, 11, 4]), // EADGBE
-  'Guitar Open D': new Instrument([2, 9, 2, 6, 9, 2]), // DADF#AD
-  'Guitar Open G': new Instrument([2, 7, 2, 7, 11, 2]), // DGDGBD
-  Bass: new Instrument([4, 9, 2, 7]), // EADG
-  Ukulele: new Instrument([7, 0, 4, 9]), // GCEA
-  Banjo: new Instrument([2, 7, 11, 2]), // DGBD
-  'Banjo Open C': new Instrument([0, 7, 0, 4]), // CGCE
-};
+const INSTRUMENTS = Object.fromEntries([
+  new Instrument('Guitar', [4, 9, 2, 7, 11, 4]), // EADGBE
+  new Instrument('Guitar Open D', [2, 9, 2, 6, 9, 2]), // DADF#AD
+  new Instrument('Guitar Open G', [2, 7, 2, 7, 11, 2]), // DGDGBD
+  new Instrument('Bass', [4, 9, 2, 7]), // EADG
+  new Instrument('Ukulele', [7, 0, 4, 9]), // GCEA
+  new Instrument('Banjo', [2, 7, 11, 2]), // DGBD
+  new Instrument('Banjo Open C', [0, 7, 0, 4]), // CGCE
+].map( i => [i.name, i]));
 
 export { Chord, Finger, NOTES, TRIADS, MODES, INSTRUMENTS };

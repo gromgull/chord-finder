@@ -2,8 +2,6 @@ import { createSignal, createEffect } from "solid-js";
 
 import styles from './App.module.css';
 
-import { Finger, MODES, NOTES, INSTRUMENTS } from './mt';
-
 function Home() {
   return (
 	<>

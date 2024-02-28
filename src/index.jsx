@@ -6,7 +6,7 @@ import './index.css';
 import Home from './Home';
 import Scales from './Scales';
 import Chords from './Chords';
-import { Settings } from './Settings';
+import { options, Settings } from './Settings';
 
 import styles from './App.module.css';
 import logo from "./assets/guitar.png";
@@ -24,7 +24,14 @@ function App(props) {
   return (
   <>
 	<header class={styles.header}>
-	  <a href="" class={styles.logo}><img width="32" src={logo} alt="chords logo" />Chord Finder</a>
+	  <a href="" class={styles.logo}>
+		<img width="32" src={logo} alt="chords logo" />
+		<div>
+		Chord Finder
+		<br/>
+		<span class={styles.instrument}>{options().instrument.name}</span>
+		</div>
+	  </a>
 	  <input ref={menuBtn} class={styles.menuBtn} type="checkbox" id="menu-btn" />
 	  <label class={styles.menuIcon} for="menu-btn"><span class={styles.navicon}></span></label>
 	  <ul class={styles.menu}>
