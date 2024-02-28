@@ -298,4 +298,4 @@ const INSTRUMENTS = Object.fromEntries([
   new Instrument('Banjo Open C', [0, 7, 0, 4]), // CGCE
 ].map( i => [i.name, i]));
 
-export { Chord, Finger, NOTES, TRIADS, MODES, INSTRUMENTS };
+export { Chord, Finger, Instrument, NOTES, TRIADS, MODES, INSTRUMENTS };

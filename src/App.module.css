@@ -290,3 +290,12 @@ label {
 .chord-notes {
   font-size: small;
 }
+
+.instrument-editor select {
+  margin-left: 10px;
+}
+
+.instrument-editor .small-button {
+  padding: 3px;
+  line-height: normal;
+}

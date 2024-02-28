@@ -6,7 +6,10 @@ import './index.css';
 import Home from './Home';
 import Scales from './Scales';
 import Chords from './Chords';
+import InstrumentEditor from './InstrumentEditor';
+
 import { options, Settings } from './Settings';
+import { NOTES } from './mt';
 
 import styles from './App.module.css';
 import logo from "./assets/guitar.png";
@@ -29,7 +32,7 @@ function App(props) {
 		<div>
 		Chord Finder
 		<br/>
-		<span class={styles.instrument}>{options().instrument.name}</span>
+		<span class={styles.instrument}>{options().instrument.name} [{ options().instrument.strings.map( s => NOTES[s] ).join(' - ') }]</span>
 		</div>
 	  </a>
 	  <input ref={menuBtn} class={styles.menuBtn} type="checkbox" id="menu-btn" />
@@ -54,5 +57,7 @@ render(() => <HashRouter root={App}>
     <Route path="/scales" component={Scales} />
     <Route path="/chords" component={Chords} />
     <Route path="/settings" component={Settings} />
+    <Route path="/instrument" component={InstrumentEditor} />
+
     <Route path="/" component={Home} />
   </HashRouter>, root);

@@ -51,6 +51,7 @@ function Chords() {
 	  </fieldset>
 	  <h2>{chord().label} <span class={styles.chordNotes}>[{chord().notes.map(n => NOTES[n]).join(' - ')}]</span></h2>
 
+	  <Show when={fingerings().length==0}><p>No chords found :(</p></Show>
 	  <For each={fingerings()}>{ (fingering, n) =>
 		<div class={styles.chordblock}>
 		  <div>

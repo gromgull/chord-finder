@@ -19,7 +19,7 @@ const [max_fret, setmax_fret] = createSignal(default_options.max_fret);
 const [max_fingers, setMax_fingers] = createSignal(default_options.max_fingers);
 const [max_reach, setMax_reach] = createSignal(default_options.max_reach);
 
-const [instrument, setInstrument] = createSignal(INSTRUMENTS[default_options.instrument]);
+const [instrument, setInstrument] = createSignal(INSTRUMENTS[default_options.instrument] || INSTRUMENTS['Guitar']);
 
 const [instruments, setInstruments] = createSignal(INSTRUMENTS)
 
@@ -36,8 +36,12 @@ function Settings() {
 
 	  <label>Instrument</label>
 	  <select onChange={e => setInstrument(instruments()[e.currentTarget.value])}>
-		{ Object.values(INSTRUMENTS).map(i => <option value={i.name} selected={instrument() == i}>{i.name} [{ i.strings.map( s => NOTES[s] ).join(' - ') }]</option>) }
+		<For each={Object.values(instruments())}>{ i => <option value={i.name} selected={instrument() == i}>{i.name} [{ i.strings.map( s => NOTES[s] ).join(' - ') }]</option>
+		}</For>
 	  </select>
+		<p>
+		  <a href="/instrument">Add a new instrument</a>
+		</p>
 
 	  <label><input type="checkbox" checked={force_root()} onChange={e => setForce_root(e.currentTarget.checked)}/> Force Root Bass</label>
 
@@ -60,4 +64,4 @@ function Settings() {
 
 }
 
-export { Settings, options };
+export { Settings, options, instruments, setInstruments, setInstrument };
