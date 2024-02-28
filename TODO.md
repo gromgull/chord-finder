@@ -6,4 +6,7 @@
 * more instruments / custom tunings
 * chord/scale favourite in localStorage
 
-* allow open strings
+* allow skipping 5 when 7 or higher
+
+* better chord naming
+* split bass

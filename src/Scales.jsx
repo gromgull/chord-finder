@@ -1,4 +1,4 @@
-import { createSignal, createEffect, on } from "solid-js";
+import { createSignal, createEffect, createMemo, on } from "solid-js";
 
 import styles from './App.module.css';
 
@@ -27,7 +27,7 @@ function Roman({degree, type}) {
 function ChordVariations({scale, degree, instrument, force_root}) {
   const [n, setN] = createSignal(0);
   const chord = () => scale().chord(degree);
-  const fingerings = () => instrument().chord_fingerings(chord(), { max_fret: 12, max_reach: 3, force_root: force_root() });
+  const fingerings = createMemo(() => instrument().chord_fingerings(chord(), { max_fret: 12, max_reach: 3, force_root: force_root() }));
   const fingering = () => fingerings()[n()];
 
   createEffect( on(chord, () => setN(0)) );
