@@ -26,11 +26,7 @@ function Chords() {
   const [triad, setTriad] = createSignal(TRIADS[0]);
   const [seven, setSeven] = createSignal(null);
 
-  const [n, setN] = createSignal(0);
-
   const chord = () => createChord(root(), triad(), seven());
-
-  createEffect( on(chord, () => setN(0)) );
 
   const fingerings = createMemo(() => instrument().chord_fingerings(chord(), { max_fret: 12, max_reach: 3, force_root: force_root() }));
 
@@ -53,16 +49,16 @@ function Chords() {
 		)}
 
 	  </fieldset>
-	  <h2>{chord().label}</h2>
-	  <div class={styles.chordblock}>
-		<div>
-		  <span>{chord().notes.map(n => NOTES[n]).join(' - ')}</span>
-		  <ChordDiagram instrument={instrument} fingering={fingering} no_frets={5} />
-		  <button disabled={n()==0} onClick={() => setN(n()-1)}>❮</button>
-		  ({n()+1}/{fingerings().length})
-		  <button disabled={n()>=fingerings().length-1} onClick={() => setN(n()+1)}>❯</button>
+	  <h2>{chord().label} <span class={styles.chordNotes}>[{chord().notes.map(n => NOTES[n]).join(' - ')}]</span></h2>
+
+	  <For each={fingerings()}>{ (fingering, n) =>
+		<div class={styles.chordblock}>
+		  <div>
+			<ChordDiagram instrument={instrument} fingering={() => fingering} no_frets={5} />
+			({n()+1}/{fingerings().length})
+		  </div>
 		</div>
-	  </div>
+	  }</For>
 	  <br class={styles.clear} />
 	</>
   );

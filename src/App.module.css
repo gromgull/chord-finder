@@ -265,3 +265,7 @@ p {
 label {
   font-weight: 500;
 }
+
+.chord-notes {
+  font-size: small;
+}
