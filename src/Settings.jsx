@@ -19,15 +19,26 @@ const [max_fret, setmax_fret] = createSignal(default_options.max_fret);
 const [max_fingers, setMax_fingers] = createSignal(default_options.max_fingers);
 const [max_reach, setMax_reach] = createSignal(default_options.max_reach);
 
-const [instrument, setInstrument] = createSignal(INSTRUMENTS[default_options.instrument] || INSTRUMENTS['Guitar']);
+const [instruments, setInstruments] = createSignal({...INSTRUMENTS, ...(default_options.custom_instruments || {})});
 
-const [instruments, setInstruments] = createSignal(INSTRUMENTS)
+const [instrument, setInstrument] = createSignal(instruments()[default_options.instrument] || INSTRUMENTS['Guitar']);
+
 
 const options = () => ({ force_root: force_root(), max_reach: max_reach(), max_fingers: max_fingers(), max_fret: max_fret(), instrument: instrument() });
 
+function addInstrument(i) {
+  setInstruments({...instruments(), [i.name]: i});
+  setInstrument(i);
+
+}
+
 function Settings() {
 
-  createEffect(on([force_root, max_reach, max_fingers, max_fret, instrument], ([force_root, max_reach, max_fingers, max_fret, instrument]) => localStorage.setItem('options', JSON.stringify({ force_root, max_reach, max_fingers, max_fret, instrument: instrument.name}))));
+  createEffect(on([force_root, max_reach, max_fingers, max_fret, instrument, instruments], ([force_root, max_reach, max_fingers, max_fret, instrument, instruments]) => {
+	const custom_instruments = Object.fromEntries( Object.entries(instruments).filter(([k,v]) => INSTRUMENTS[k] === undefined));
+	const opts = { force_root, max_reach, max_fingers, max_fret, instrument: instrument.name, custom_instruments };
+	localStorage.setItem('options', JSON.stringify(opts))
+  }));
 
   return (
 	<fieldset>
@@ -64,4 +75,4 @@ function Settings() {
 
 }
 
-export { Settings, options, instruments, setInstruments, setInstrument };
+export { Settings, options, instruments, addInstrument };

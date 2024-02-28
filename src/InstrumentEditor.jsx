@@ -4,19 +4,17 @@ import { useNavigate } from "@solidjs/router";
 import styles from './App.module.css';
 
 import { Instrument, NOTES } from './mt';
-import { instruments, setInstrument, setInstruments } from './Settings';
+import { addInstrument } from './Settings';
 
 function InstrumentEditor() {
   const navigate = useNavigate();
 
-  const [ strings, setStrings ] = createSignal([createSignal(0), createSignal(0), createSignal(0)]);
+  const [ strings, setStrings ] = createSignal([createSignal(0), createSignal(4), createSignal(7)]);
 
   const [ name, setName ] = createSignal('');
 
   const save = () => {
-	const i = new Instrument(name(), strings().map( ([s,_]) => parseInt(s(),10) ));
-	setInstruments({...instruments(), [name()]: i});
-	setInstrument(i);
+	addInstrument(new Instrument(name(), strings().map( ([s,_]) => parseInt(s(),10) )));
 	navigate("/settings", { replace: true });
   }
 
