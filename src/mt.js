@@ -288,10 +288,13 @@ const MODES = {
 
 
 const INSTRUMENTS = {
-  guitar: new Instrument([4, 9, 2, 7, 11, 4]),
-  bass: new Instrument([4, 9, 2, 7]),
-  ukulele: new Instrument([7, 0, 4, 9]),
-  banjo: new Instrument([2, 7, 11, 2]),
+  Guitar: new Instrument([4, 9, 2, 7, 11, 4]), // EADGBE
+  'Guitar Open D': new Instrument([2, 9, 2, 6, 9, 2]), // DADF#AD
+  'Guitar Open G': new Instrument([2, 7, 2, 7, 11, 2]), // DGDGBD
+  Bass: new Instrument([4, 9, 2, 7]), // EADG
+  Ukulele: new Instrument([7, 0, 4, 9]), // GCEA
+  Banjo: new Instrument([2, 7, 11, 2]), // DGBD
+  'Banjo Open C': new Instrument([0, 7, 0, 4]), // CGCE
 };
 
 export { Chord, Finger, NOTES, TRIADS, MODES, INSTRUMENTS };

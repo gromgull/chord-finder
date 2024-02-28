@@ -26,7 +26,7 @@ function Settings() {
 	<fieldset>
 	  <label>Instrument</label>
 	  <select onChange={e => saveInstrument(e.currentTarget.value)}>
-		{ Object.keys(INSTRUMENTS).map(i => <option value={i} selected={instrument() == INSTRUMENTS[i]}>{i} { INSTRUMENTS[i].strings.map( s => NOTES[s] ).join(' - ') }</option>) }
+		{ Object.keys(INSTRUMENTS).map(i => <option value={i} selected={instrument() == INSTRUMENTS[i]}>{i} [{ INSTRUMENTS[i].strings.map( s => NOTES[s] ).join(' - ') }]</option>) }
 	  </select>
 
 		<label><input type="checkbox" checked={force_root()} onChange={e => saveForceRoot(e.currentTarget.checked)}/> Force Root Bass</label>
