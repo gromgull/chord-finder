@@ -1,4 +1,4 @@
-import { createSignal, createEffect } from "solid-js";
+import { createSignal, createEffect, on } from "solid-js";
 
 import styles from './App.module.css';
 import logo from "./assets/guitar.png";
@@ -29,6 +29,9 @@ function Chords() {
   const [n, setN] = createSignal(0);
 
   const chord = () => createChord(root(), triad(), seven());
+
+  createEffect( on(chord, () => setN(0)) );
+
   const fingerings = () => instrument().chord_fingerings(chord(), { max_fret: 12, max_reach: 3, force_root: force_root() });
   const fingering = () => fingerings()[n()];
 

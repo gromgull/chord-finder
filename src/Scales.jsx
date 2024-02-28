@@ -1,4 +1,4 @@
-import { createSignal, createEffect } from "solid-js";
+import { createSignal, createEffect, on } from "solid-js";
 
 import styles from './App.module.css';
 
@@ -29,6 +29,9 @@ function ChordVariations({scale, degree, instrument, force_root}) {
   const chord = () => scale().chord(degree);
   const fingerings = () => instrument().chord_fingerings(chord(), { max_fret: 12, max_reach: 3, force_root: force_root() });
   const fingering = () => fingerings()[n()];
+
+  createEffect( on(chord, () => setN(0)) );
+
   return (
 	<div class={styles.chordblock}>
 	  <h3><Roman degree={degree} type={chord().type}/>{chord().label}</h3>
