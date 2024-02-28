@@ -7,7 +7,7 @@ import { Finger, MODES, NOTES, INSTRUMENTS } from './mt';
 
 const [force_root, setForce_root] = createSignal(localStorage.getItem('forceRoot')===undefined ? true : localStorage.getItem('forceRoot') == 'true');
 
-const [instrument, setInstrument] = createSignal(INSTRUMENTS[localStorage.getItem('instrument') || 'guitar']);
+const [instrument, setInstrument] = createSignal(INSTRUMENTS[localStorage.getItem('instrument') || 'Guitar']);
 
 
 function Settings() {
