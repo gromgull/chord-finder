@@ -9,7 +9,7 @@ import { addInstrument } from './Settings';
 function InstrumentEditor() {
   const navigate = useNavigate();
 
-  const [ strings, setStrings ] = createSignal([createSignal(0), createSignal(4), createSignal(7)]);
+  const [ strings, setStrings ] = createSignal([createSignal(0), createSignal(5), createSignal(11)]);
 
   const [ name, setName ] = createSignal('My Cigar Box Banjo');
 

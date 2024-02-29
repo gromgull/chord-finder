@@ -3,7 +3,7 @@ import { createSignal, createEffect, on } from "solid-js";
 import styles from './App.module.css';
 import logo from "./assets/guitar.png";
 
-import { Finger, MODES, NOTES, INSTRUMENTS } from './mt';
+import { Instrument, NOTES, INSTRUMENTS } from './mt';
 
 const saved_options = JSON.parse(localStorage.getItem('options') || '{}');
 const default_options = { ...{
@@ -12,7 +12,10 @@ const default_options = { ...{
   max_fingers: 4,
   max_reach: 4,
   instrument: 'Guitar',
+  custom_instruments: {},
 }, ...saved_options};
+
+default_options['custom_instruments'] = Object.fromEntries(Object.entries(default_options['custom_instruments']).map( ([k,v]) => [k, new Instrument(v.name, v.strings)] ));
 
 const [force_root, setForce_root] = createSignal(default_options.force_root);
 const [max_fret, setmax_fret] = createSignal(default_options.max_fret);
