@@ -7,7 +7,9 @@ function ChordDiagram({instrument, fingering, no_frets}) {
 
   const w = () => instrument.strings.length*10-10+nut_margins*2;
 
-  const start_fret = () => Math.max(1, fingering() ? fingering().min_fret : 0);
+  const start_fret0 = () => Math.max(1, fingering() ? fingering().min_fret : 0);
+
+  const start_fret = () => start_fret0() < no_frets && fingering().max_fret <= no_frets ? 1 : start_fret0();
 
   const end_fret = () => start_fret+no_frets;
 
