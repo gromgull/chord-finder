@@ -153,7 +153,7 @@ class Fingering {
   }
 
   get no_fingers() {
-	return this.fingers.filter( f => !f.mute && (!f.bar || f.bar.fret != f.fret) ).length;
+	return this.sounding.filter( f => (!this.bar || this.bar.fret != f.fret && this.bar != f) && f.fret ).length;
   }
 
   get sounding() {
