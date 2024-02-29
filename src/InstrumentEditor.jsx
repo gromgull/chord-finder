@@ -11,12 +11,14 @@ function InstrumentEditor() {
 
   const [ strings, setStrings ] = createSignal([createSignal(0), createSignal(4), createSignal(7)]);
 
-  const [ name, setName ] = createSignal('');
+  const [ name, setName ] = createSignal('My Cigar Box Banjo');
 
   const save = () => {
 	addInstrument(new Instrument(name(), strings().map( ([s,_]) => parseInt(s(),10) )));
 	navigate("/settings", { replace: true });
   }
+
+  const validate = () => name() && strings().length;
 
   return (
 	<fieldset class={styles.instrumentEditor}>
@@ -32,12 +34,12 @@ function InstrumentEditor() {
 		  <select onChange={e => setNote(e.currentTarget.value)}>
 			{ Object.keys(NOTES).map(n => <option selected={n==note()} value={n}>{NOTES[n]}</option>) }
 		  </select>
-		  <input class={styles.smallButton} type="button" value="✖" onClick={() => setStrings([...strings()].toSpliced(i(), 1))} />
+		  <input class={styles.smallButton} type="button" value="✕" onClick={() => setStrings([...strings()].toSpliced(i(), 1))} />
 		  <br/>
 		</>
 	  }</For>
 	  <br/>
-	  <input onClick={e => save()} type="button" value="Save" />
+	  <input onClick={e => save()} disabled={!validate()} type="button" value="Save" />
 	</fieldset>
   );
 }
