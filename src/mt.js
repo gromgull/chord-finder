@@ -250,22 +250,23 @@ class Chord {
 const STEP = { W: 2, H: 1 };
 
 class Scale {
-  constructor(notes) {
+  constructor(name, notes) {
+	this.name = name;
 	this.notes = notes;
   }
 
-  static fromSteps(steps) {
+  static fromSteps(name, steps) {
 	let n = 0;
 	steps = [...steps];
 	steps.pop();
-	return new Scale([0, ...steps.map(s => {
+	return new Scale(name, [0, ...steps.map(s => {
 	  n = (n + STEP[s]) % 12;
 	  return n;
 	})]);
   }
 
   transpose(n) {
-	return new Scale(this.notes.map( s => (s+n) % 12 ));
+	return new Scale(this.name, this.notes.map( s => (s+n) % 12 ));
   }
 
   label(n) {
@@ -277,15 +278,15 @@ class Scale {
   }
 }
 
-const MODES = {
-  "Ionian / Major": Scale.fromSteps("WWHWWWH"), // major
-  "Dorian": Scale.fromSteps("WHWWWHW"),
-  "Phrygian": Scale.fromSteps("HWWWHWW"),
-  "Lydian": Scale.fromSteps("WWWHWWH"),
-  "Mixolydian": Scale.fromSteps("WWHWWHW"),
-  "Aeolian / Minor": Scale.fromSteps("WHWWHWW"), // natural minor
-  "Locrian": Scale.fromSteps("HWWHWWW"),
-}
+const MODES = Object.fromEntries([
+  Scale.fromSteps("Ionian / Major", "WWHWWWH"), // major
+  Scale.fromSteps("Dorian", "WHWWWHW"),
+  Scale.fromSteps("Phrygian", "HWWWHWW"),
+  Scale.fromSteps("Lydian", "WWWHWWH"),
+  Scale.fromSteps("Mixolydian", "WWHWWHW"),
+  Scale.fromSteps("Aeolian / Minor", "WHWWHWW"), // natural minor
+  Scale.fromSteps("Locrian", "HWWHWWW"),
+].map( s => [s.name, s]));
 
 
 const INSTRUMENTS = Object.fromEntries([

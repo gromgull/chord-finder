@@ -49,18 +49,24 @@ function Chords() {
 		)}
 
 	  </fieldset>
-	  <h2>{chord().label} <span class={styles.chordNotes}>[{chord().notes.map(n => NOTES[n]).join(' - ')}]</span></h2>
+	  <h2 class={styles.chordLabel}>{chord().label} <span class={styles.chordNotes}>[{chord().notes.map(n => NOTES[n]).join(' - ')}]</span></h2>
 
-	  <Show when={fingerings().length==0}><p>No chords found :(</p></Show>
-	  <For each={fingerings()}>{ (fingering, n) =>
-		<div class={styles.chordblock}>
-		  <div>
-			<ChordDiagram instrument={options().instrument} fingering={() => fingering} no_frets={5} />
-			({n()+1}/{fingerings().length})
+	  <Portal mount={document.querySelector('header')}>
+		<h1>{chord().label} <span class={styles.chordNotes}>[{chord().notes.map(n => NOTES[n]).join(' - ')}]</span></h1>
+	  </Portal>
+
+	  <div class={styles.chords}>
+		<Show when={fingerings().length==0}><p>No chords found :(</p></Show>
+
+		<For each={fingerings()}>{ (fingering, n) =>
+		  <div class={styles.chordblock}>
+			<div>
+			  <ChordDiagram instrument={options().instrument} fingering={() => fingering} no_frets={5} />
+			  ({n()+1}/{fingerings().length})
+			</div>
 		  </div>
-		</div>
-	  }</For>
-	  <br class={styles.clear} />
+		}</For>
+	  </div>
 	</>
   );
 

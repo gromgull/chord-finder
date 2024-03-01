@@ -39,9 +39,11 @@ function ChordVariations({scale, degree}) {
 	  <div>
 		<span>{chord().notes.map(n => NOTES[n]).join(' - ')}</span>
 		<ChordDiagram instrument={options().instrument} fingering={fingering} no_frets={5} />
-		<button disabled={n()==0} onClick={() => setN(n()-1)}>❮</button>
-		({n()+1}/{fingerings().length})
-		<button disabled={n()>=fingerings().length-1} onClick={() => setN(n()+1)}>❯</button>
+		<div class={styles.controls}>
+		  <button disabled={n()==0} onClick={() => setN(n()-1)}>❮</button>
+		  ({n()+1}/{fingerings().length})
+		  <button disabled={n()>=fingerings().length-1} onClick={() => setN(n()+1)}>❯</button>
+		</div>
 	  </div>
 	</div>
   );
@@ -58,6 +60,10 @@ function Scales() {
 
   return (
 	<>
+	  <Portal mount={document.querySelector('header')}>
+		<h1 class={styles.onlyPrint}>{NOTES[root()]} {mode().name}</h1>
+	  </Portal>
+
 	  <fieldset>
 		<label>Mode</label>
 		<select onChange={e => setMode(MODES[e.currentTarget.value])}>
@@ -68,18 +74,21 @@ function Scales() {
 		  <button classList={{[styles.active]: i==root()}} onClick={() => setRoot(i)}>{n}</button>
 		)}
 	  </fieldset>
-	  <div>
-		<h2>Chords</h2>
-		<br/>
+	  <h2>Chords</h2>
+	  <div class={styles.chords}>
 		<For each={[...Array(scale().notes.length).keys()]}>{ d =>
 		  <ChordVariations scale={scale} degree={d} />
 		}</For>
 	  </div>
-	  <br class={styles.clear}/>
-	  <h2>Scale</h2>
+
+
 	  <div class={styles.scale}>
-		<ChordDiagram instrument={options().instrument} fingering={fingering} no_frets={8}/>
+		<h2>Scale</h2>
+		<div>
+		  <ChordDiagram instrument={options().instrument} fingering={fingering} no_frets={8}/>
+		</div>
 	  </div>
+
     </>
   );
 }

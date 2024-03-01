@@ -13,6 +13,7 @@ import { NOTES } from './mt';
 
 import styles from './App.module.css';
 import logo from "./assets/guitar.png";
+import github from "./assets/github-48.png";
 
 const root = document.getElementById('root');
 
@@ -46,9 +47,9 @@ function App(props) {
 	<div class={styles.content}>
       {props.children}
 	</div>
-	<div class={styles.footer}>
-	  Chord finder! / <a href="https://github.com/gromgull/chord-finder">GitHub</a> / AGPL License
-	</div>
+	<footer class={styles.footer}>
+	  Chord finder! / by <a href="https://twitter.com/gromgull">gromgull</a> / <img style={{height: "1em"}} src={github} alt="GitHub logo" /> <a href="https://github.com/gromgull/chord-finder">GitHub</a> / AGPL License
+	</footer>
   </>
 );
 }

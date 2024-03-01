@@ -22,7 +22,7 @@ function ChordDiagram({instrument, fingering, no_frets}) {
 		<For each={[...Array(no_frets+1).keys()]}>{i =>
 		  <>
 			<line x1={nut_margins} x2={w()-nut_margins} y1={fret_spacing*(i)} y2={fret_spacing*(i)} class={styles.fret}/>
-			<text class={styles.text} x={-10} y={fret_spacing*(i+0.5)}>{start_fret()+i}</text>
+			<Show when={i!=no_frets}><text class={styles.text} x={-10} y={fret_spacing*(i+0.5)}>{start_fret()+i}</text></Show>
 		  </>
 		}</For>
 		<For each={instrument.strings}>{(n, i) =>

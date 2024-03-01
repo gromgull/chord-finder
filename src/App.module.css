@@ -20,6 +20,38 @@
 
 }
 
+@media print {
+  fieldset, .controls, .menu, .chord-label {
+	display: none !important;
+  }
+  .only-print, header div:last-of-type {
+	display: block !important;
+  }
+
+  h1, h2 {
+	padding: 0;
+	margin: 0;
+	margin-right: 10px;
+  }
+  .chordblock {
+	width: 25%;
+	margin: 0 !important;
+  }
+  .scale {
+	padding-top: 100px;
+	break-before: page;
+  }
+  .scale div {
+	height: 75vh;
+  }
+  .scale svg {
+	height: 100%;
+  }
+}
+
+.only-print, header div:last-of-type {
+  display: none;
+}
 
 .chord {
   margin: 10px;
@@ -80,7 +112,6 @@
 }
 
 .chordblock {
-  float: left;
   margin-right: 20px;
 }
 
@@ -97,10 +128,6 @@
 
 .chordblock div {
   text-align: center;
-}
-
-.clear {
-  clear: both;
 }
 
 .footer {
@@ -124,17 +151,17 @@ body {
   padding: 0;
 }
 
-.content {
-  padding-top: 100px;
-}
-
 .header {
   background-color: #fff;
   box-shadow: 1px 1px 4px 0 rgba(0,0,0,.1);
-  position: fixed;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
   width: 100%;
   z-index: 3;
   padding: 0;
+  position: sticky;
 }
 
 .header ul {
@@ -159,7 +186,6 @@ body {
 
 .header .logo {
   display: block;
-  float: left;
   font-size: 2em;
   padding: 10px 20px;
   text-decoration: none;
@@ -185,7 +211,7 @@ body {
 /* menu */
 
 .header .menu {
-  clear: both;
+  flex: 0 1 100%;
   max-height: 0;
   transition: max-height .2s ease-out;
 }
@@ -195,10 +221,9 @@ body {
 .header .menu-icon {
   cursor: pointer;
   display: inline-block;
-  float: right;
   padding: 28px 20px;
-  position: relative;
   user-select: none;
+  margin: 0;
 }
 
 .header .menu-icon .navicon {
@@ -259,15 +284,14 @@ body {
 /* 48em = 768px */
 
 @media (min-width: 48em) {
-  .header li {
-    float: left;
+  .header ul {
+	display: flex;
+	flex: 0 1 auto !important;
   }
   .header li a {
     padding: 20px 30px;
   }
   .header .menu {
-    clear: none;
-    float: right;
     max-height: none;
   }
   .header .menu-icon {
@@ -289,6 +313,12 @@ label {
 
 .chord-notes {
   font-size: small;
+}
+
+.chords {
+  display: flex;
+  flex-wrap: wrap;
+  box-decoration-break: clone;
 }
 
 .instrument-editor select {
