@@ -10,6 +10,12 @@ function Home() {
 	  <p>Pick your instrument on the <a href="/settings">settings</a> page, and go either to the <a href="/scales">scales</a> or <a href="/chords">chords</a> page!</p>
 
 	  <p>This is not a chord data-base, the app calculates ways to play the chords on the fly. You can tweak exactly how on the settings page.</p>
+
+	  <h2>Updates</h2>
+	  <dl>
+		<dt>2024-03-02</dt>
+		<dd>Added print stylesheet for nice printed/PDF versions</dd>
+	  </dl>
 	</>
   );
 }
