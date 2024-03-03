@@ -137,9 +137,13 @@ class Fingering {
   }
 
   static sorter(a,b) {
+	const f = a.min_sounding_fret - b.min_sounding_fret;
+	if (f) return f;
 	if (!a.bar && b.bar) return -1;
 	if (a.bar && !b.bar) return 1;
-	return a.min_sounding_fret - b.min_sounding_fret;
+	if (a.sounding.length > b.sounding.length) return -1;
+	if (a.sounding.length < b.sounding.length) return 1;
+	return 0;
   }
 
   get min_sounding_fret() {
