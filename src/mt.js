@@ -108,6 +108,9 @@ class Instrument {
 	filtered = filtered.filter( fs => !filtered.some( other => fs != other && fs.isSubSetOf(other) ));
 	filtered.sort( Fingering.sorter );
 
+	if (options.lefty)
+	  filtered = filtered.map( fs => fs.lefty(options.instrument) );
+
 	return filtered;
   }
 
@@ -168,6 +171,9 @@ class Fingering {
 	return Math.max(...this.fingered.map( f => Math.abs(f.fret-fret) ));
   }
 
+  lefty(instrument) {
+	return new Fingering(this.fingers.map( f => new Finger(instrument.strings.length-1-f.string, f.fret, f.color, f.label, f.bar)));
+  }
 
   get bar() {
 	return this.fingers.flatMap( f => f.bar ? [f] : [])[0];

@@ -13,6 +13,8 @@ function Home() {
 
 	  <h2>Updates</h2>
 	  <dl>
+		<dt>2024-03-03</dt>
+		<dd>Added option for left-handed instruments</dd>
 		<dt>2024-03-02</dt>
 		<dd>Added print stylesheet for nice printed/PDF versions</dd>
 	  </dl>
