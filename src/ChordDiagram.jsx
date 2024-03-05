@@ -35,7 +35,7 @@ function ChordDiagram({instrument, fingering, no_frets}) {
 			const y = f.mute || f.fret == 0 ? -fret_spacing+fret_spacing/2+4 : (f.fret-start_fret()+1)*fret_spacing-fret_spacing/2 + (f.fret == 0 ? 4 : 0);
 			return <>
 					 <Show when={f.bar}>
-					   <line x1={x} y1={y} y2={y} x2={nut_margins+instrument.strings.length*10-10} class={styles.bar} />
+					   <line x1={x} y1={y} y2={y} x2={f.bar == 'left' ? nut_margins : nut_margins+instrument.strings.length*10-10} class={styles.bar} />
 					 </Show>
 					 <Show when={!f.mute} fallback={<text class={styles.textx} x={x} y={y}>⨯</text>}>
 					   <circle class={styles.finger+' '+styles['n'+(1+f.color)]} cx={x} cy={y} r="5" />

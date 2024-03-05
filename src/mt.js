@@ -176,7 +176,7 @@ class Fingering {
   }
 
   lefty(instrument) {
-	return new Fingering(this.fingers.map( f => new Finger(instrument.strings.length-1-f.string, f.fret, f.color, f.label, f.bar)));
+	return new Fingering(this.fingers.map( f => new Finger(instrument.strings.length-1-f.string, f.fret, f.color, f.label, f.bar ? 'left' : false)));
   }
 
   get bar() {
