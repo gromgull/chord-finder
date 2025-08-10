@@ -20,19 +20,42 @@ Notes are numbers from 0-12
 
 const NOTES = {
   0: 'C',
-  1: 'C#',
+  1: 'C♯',
   2: 'D',
-  3: 'D#',
+  3: 'D♯',
   4: 'E',
   5: 'F',
-  6: 'F#',
+  6: 'F♯',
   7: 'G',
-  8: 'G#',
+  8: 'G♯',
   9: 'A',
-  10: 'A#',
+  10: 'A♯',
   11: 'B',
 };
 
+
+const CIRCLE_OF_FIFTHS = [
+  0,  // C
+  7,  // G
+  2,  // D
+  9,  // A
+  4,  // E
+  11, // B
+  6,  // F#
+  1,  // C#
+  8,  // G#
+  3,  // D#
+  10, // A#
+  5   // F
+];
+
+function interval_quality(n) {
+
+  if ([ '1', '5', '4' ].includes(n)) return 'perfect';
+  if (n.includes('♭')) return 'minor'; // well - not really, but we don't care about aug/dim
+
+  return 'major';
+}
 
 class Instrument {
   constructor(name, strings) {
@@ -279,6 +302,18 @@ class Scale {
 	return new Scale(this.name, this.notes.map( s => (s+n) % 12 ));
   }
 
+  interval_number(n) {
+	const i = this.notes.indexOf(n);
+	if (i == -1) return '';
+
+	const interval = (12+this.notes[i]-this.notes[0])%12;
+	const diff = MODES['Ionian / Major'].notes[i] - interval;
+	if (diff < 0) return '♯'.repeat(-diff) + (i+1);
+	if (diff > 0) return '♭'.repeat(diff) + (i+1);
+	return ''+(i+1);
+
+  }
+
   label(n) {
 	return NOTES[n];
   }
@@ -289,13 +324,14 @@ class Scale {
 }
 
 const MODES = Object.fromEntries([
-  Scale.fromSteps("Ionian / Major", "WWHWWWH"), // major
-  Scale.fromSteps("Dorian", "WHWWWHW"),
-  Scale.fromSteps("Phrygian", "HWWWHWW"),
   Scale.fromSteps("Lydian", "WWWHWWH"),
+  Scale.fromSteps("Ionian / Major", "WWHWWWH"), // major
   Scale.fromSteps("Mixolydian", "WWHWWHW"),
+  Scale.fromSteps("Dorian", "WHWWWHW"),
   Scale.fromSteps("Aeolian / Minor", "WHWWHWW"), // natural minor
+  Scale.fromSteps("Phrygian", "HWWWHWW"),
   Scale.fromSteps("Locrian", "HWWHWWW"),
+
 ].map( s => [s.name, s]));
 
 
@@ -309,4 +345,4 @@ const INSTRUMENTS = Object.fromEntries([
   new Instrument('Banjo Open C', [0, 7, 0, 4]), // CGCE
 ].map( i => [i.name, i]));
 
-export { Chord, Finger, Instrument, NOTES, TRIADS, MODES, INSTRUMENTS };
+export { Chord, Finger, Instrument, NOTES, TRIADS, MODES, INSTRUMENTS, CIRCLE_OF_FIFTHS, interval_quality, interval_number };

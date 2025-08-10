@@ -8,6 +8,8 @@ import { options } from './Settings';
 
 import ChordDiagram from './ChordDiagram';
 
+import Circle from './Circle';
+
 function Roman({degree, type}) {
 
   const roman = [ 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII' ];
@@ -74,6 +76,11 @@ function Scales() {
 		  <button classList={{[styles.active]: i==root()}} onClick={() => setRoot(i)}>{n}</button>
 		)}
 	  </fieldset>
+
+      <Circle
+        scale={scale} mode={mode}
+      />
+
 	  <h2>Chords</h2>
 	  <div class={styles.chords}>
 		<For each={[...Array(scale().notes.length).keys()]}>{ d =>
