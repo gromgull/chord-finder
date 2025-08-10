@@ -66,8 +66,8 @@ function Scales() {
 
 	  <fieldset>
 		<label>Mode</label>
-		<select onChange={e => setMode(MODES[e.currentTarget.value])}>
-		  { Object.keys(MODES).map(i => <option>{i}</option>) }
+		<select value={mode().name} onChange={e => setMode(MODES[e.currentTarget.value])}>
+		  { Object.keys(MODES).map(i => <option value={i}>{i}</option>) }
 		</select><br/>
 		<label>Key</label>
 		{ Object.values(NOTES).map((n, i) =>
