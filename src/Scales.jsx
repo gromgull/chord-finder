@@ -67,7 +67,7 @@ function Scales() {
 
   const notes = () => flat() ? NOTES_FLAT : NOTES;
 
-  const fingering = () => options().instrument.fingering(scale(), 9);
+  const fingering = () => options().instrument.fingering(scale(), 13);
 
   return (
 	<>
@@ -99,7 +99,7 @@ function Scales() {
 	  <div class={styles.scale}>
 		<h2>Scale</h2>
 		<div>
-		  <ChordDiagram instrument={options().instrument} fingering={fingering} no_frets={8}/>
+		  <ChordDiagram instrument={options().instrument} fingering={fingering} no_frets={12}/>
 		</div>
 	  </div>
 
