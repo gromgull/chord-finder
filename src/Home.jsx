@@ -13,6 +13,9 @@ function Home() {
 
 	  <h2>Updates</h2>
 	  <dl>
+		<dt>2025-08-24</dt>
+		<dd>Added circle of fifth visualisation of scales (borrowed from the excellent <a href="https://apps.musedlab.org/aqwertyon/theory/C-4-major">aqwertyon</a>!). Also, scales/chords are saved in the URL now, so you can link to them.</dd>
+
 		<dt>2024-03-03</dt>
 		<dd>Added option for left-handed instruments</dd>
 		<dt>2024-03-02</dt>
