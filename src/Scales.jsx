@@ -63,9 +63,8 @@ function Scales() {
   // bug in solid-js means unicode ends up as utf8 code points in params
   const scale = createMemo(() => mode().createScale((params.key || 'C').replace('%E2%99%AD', '♭').replace('%E2%99%AF','♯')));
 
-  createEffect( () => navigate(`/scales/${params.key}/${mode().short_name}`) );
+  createEffect( () => navigate(`/scales/${params.key || 'C' }/${mode().short_name}`) );
 
-  console.log(params.key);
   const notes = () => flat() ? NOTES_FLAT : NOTES;
 
   const fingering = () => options().instrument.fingering(scale(), 9);
@@ -82,6 +81,8 @@ function Scales() {
 		  { Object.keys(MODES).map(i => <option value={i}>{MODES[i].name}</option>) }
 		</select><br/>
 	  </fieldset>
+
+      <a href="/scales/C/Major">reset</a>
 
       <Circle
         scale={scale} mode={mode}

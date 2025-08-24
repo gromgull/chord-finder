@@ -297,22 +297,20 @@ class Mode {
 	})];
   }
 
-  createScale(name) {
+  createScale(name, flats) {
 
 	const root = nameToRoot(name);
 
-	return new Scale(name, this.notes.map( s => (s+root) % 12 ));
+	return new Scale(name, this.notes.map( s => (s+root) % 12 ), flats);
   }
 
 }
 
 class Scale {
-  constructor(name, notes) {
+  constructor(name, notes, flat) {
 	this.name = name;
 	this.notes = notes;
 	this.root = this.notes[0];
-
-	let flat;
 
 	if (name.includes('♭')) flat = true;
 	if (name.includes('♯')) flat = false;
@@ -332,7 +330,6 @@ class Scale {
 	else
 	  this.labels = sharp_labels;
 
-	console.log(this.notes.map( n => this.label(n) ), this)
   }
 
   #compute_labels_flats(labels) {

@@ -3,7 +3,7 @@ import { createSignal, createEffect, createMemo } from "solid-js";
 import styles from './App.module.css';
 import logo from "./assets/guitar.png";
 
-import { Chord, Finger, TRIADS, NOTES } from './mt';
+import { Chord, Finger, TRIADS, NOTES, NOTES_FLAT, MODES } from './mt';
 
 import { options } from './Settings';
 import ChordDiagram from './ChordDiagram';
@@ -15,26 +15,28 @@ const SEVENS = [
   ['maj7', 11],
 ];
 
-function createChord(root, triad, seven) {
+function createChord(root, triad, seven, flats) {
   const notes = triad.notes.map( n => ( n+root ) % 12 );
   if (seven) notes.push((seven+root) % 12);
-  return new Chord(notes);
+  return new Chord(MODES['Major'].createScale('C', flats), notes);
 }
 
 function Chords() {
+  const [flats, setFlats] = createSignal(false);
+
   const [root, setRoot] = createSignal(0);
   const [triad, setTriad] = createSignal(TRIADS[0]);
   const [seven, setSeven] = createSignal(null);
 
-  const chord = () => createChord(root(), triad(), seven());
+  const chord = () => createChord(root(), triad(), seven(), flats());
 
   const fingerings = createMemo(() => options().instrument.chord_fingerings(chord(), options()));
 
   return (
 	<>
 	  <fieldset>
-		<label>Root</label>
-		{ Object.values(NOTES).map((n, i) =>
+		<label>Root <a onClick={() => setFlats(!flats())}>(toggle flats)</a></label>
+		{ Object.values(flats() ? NOTES_FLAT : NOTES).map((n, i) =>
 		  <button classList={{[styles.active]: i==root()}} onClick={() => setRoot(i)}>{n}</button>
 		)}
 
