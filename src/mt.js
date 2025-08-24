@@ -18,41 +18,42 @@ Notes are numbers from 0-12
 
 */
 
-const NOTES = {
-  0: 'C',
-  1: 'C♯',
-  2: 'D',
-  3: 'D♯',
-  4: 'E',
-  5: 'F',
-  6: 'F♯',
-  7: 'G',
-  8: 'G♯',
-  9: 'A',
-  10: 'A♯',
-  11: 'B',
-};
+const NOTES = ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"];
+const NOTES_FLAT = [ 'C', 'D♭', 'D', 'E♭', 'E', 'F', 'G♭', 'G', 'A♭', 'A', 'B♭', 'B'];
 
+const NOTES_INV = { ...Object.fromEntries(NOTES.map((n,i) => [n,i] )), ...Object.fromEntries(NOTES_FLAT.map((n,i) => [n,i] )) }
 
-const CIRCLE_OF_FIFTHS = [
-  0,  // C
-  7,  // G
-  2,  // D
-  9,  // A
-  4,  // E
-  11, // B
-  6,  // F#
-  1,  // C#
-  8,  // G#
-  3,  // D#
-  10, // A#
-  5   // F
-];
+const SCALE_LABELS = ['A','B','C','D','E','F','G'];
+
+const CIRCLE_OF_FIFTHS = [ ...Array(12).keys() ].map( i=> i*7 % 12);
+
+function accidental(n) {
+  //if (n == 1) return '♯';
+  //if (n == 2) return '𝄪';
+  if (n > 0) return '♯'.repeat(n);
+
+  //if (n == -1) return '♭';
+  //if (n == -2) return '𝄫'; // this looks nice, but causes some issues
+  if (n < 0) return '♭'.repeat(-n);
+
+  return '';
+}
+
+function nameToRoot(name) {
+  // this support any weird key, triple sharps etc.
+
+  if (!/[A-G](♯*|♭*)/.test(name)) throw Error("Not a valid name: "+name);
+
+  let acc = name.length - 1;
+  if (acc && name[1] == '♭') acc *= -1;
+
+  return mod12(NOTES_INV[name[0]]+ acc);
+}
 
 function interval_quality(n) {
 
   if ([ '1', '5', '4' ].includes(n)) return 'perfect';
-  if (n.includes('♭')) return 'minor'; // well - not really, but we don't care about aug/dim
+  if (n.includes('♭') || n.includes('♯')) return 'minor'; // well - not really, but we don't care about aug/dim
 
   return 'major';
 }
@@ -109,10 +110,10 @@ class Instrument {
 		if (fingering.max_reach(fret)<max_reach) {
 		  if (!bar && fret>0 && i!=this.strings.length-1) {
 			// we could try bar'ing on this string
-			this.string_fingerings(chord, options, fingering.push(new Finger(i, fret, n, NOTES[chord.notes[n]], true)), res, i+1);
+			this.string_fingerings(chord, options, fingering.push(new Finger(i, fret, n, chord.scale.label(chord.notes[n]), true)), res, i+1);
 		  }
 
-		  this.string_fingerings(chord, options, fingering.push(new Finger(i, fret, n, NOTES[chord.notes[n]])), res, i+1);
+		  this.string_fingerings(chord, options, fingering.push(new Finger(i, fret, n, chord.scale.label(chord.notes[n]))), res, i+1);
 		}
 	  }
 	}
@@ -261,7 +262,8 @@ class Chord {
 
   // notes in order, first is root
 
-  constructor(notes) {
+  constructor(scale, notes) {
+	this.scale = scale;
 	this.notes = notes;
   }
 
@@ -275,62 +277,136 @@ class Chord {
   }
 
   get label() {
-	return NOTES[this.root]+this.type;
+	return this.scale.label(this.root)+this.type;
   }
 
 }
 
 const STEP = { W: 2, H: 1 };
 
+class Mode {
+  constructor(name, steps) {
+	let n = 0;
+	steps = [...steps];
+	steps.pop();
+	this.name = name;
+	this.notes = [0, ...steps.map(s => {
+	  n = (n + STEP[s]) % 12;
+	  return n;
+	})];
+  }
+
+  createScale(name) {
+
+	const root = nameToRoot(name);
+
+	return new Scale(name, this.notes.map( s => (s+root) % 12 ));
+  }
+
+}
+
 class Scale {
   constructor(name, notes) {
 	this.name = name;
 	this.notes = notes;
+	this.root = this.notes[0];
+
+	let flat;
+
+	if (name.includes('♭')) flat = true;
+	if (name.includes('♯')) flat = false;
+
+	const idx = SCALE_LABELS.indexOf(this.name[0])
+	const labels = [ ...SCALE_LABELS.slice( idx ), ...SCALE_LABELS.slice(0, idx)];
+
+	if (this.notes.length != SCALE_LABELS.length) throw Error("I expect a 7 note scale, got "+this.notes.length);
+
+	const flat_labels = this.#compute_labels_flats(labels);
+	const sharp_labels = this.#compute_labels_sharps(labels);
+
+	if ( flat === undefined ) // pick the simplest
+	  this.labels = (flat_labels.join().length > sharp_labels.join().length) ? sharp_labels : flat_labels;
+	else if (flat)
+	  this.labels = flat_labels;
+	else
+	  this.labels = sharp_labels;
+
+	console.log(this.notes.map( n => this.label(n) ), this)
   }
 
-  static fromSteps(name, steps) {
-	let n = 0;
-	steps = [...steps];
-	steps.pop();
-	return new Scale(name, [0, ...steps.map(s => {
-	  n = (n + STEP[s]) % 12;
-	  return n;
-	})]);
+  #compute_labels_flats(labels) {
+
+	const res = new Array(12).fill(null);
+	this.notes.forEach((n,i) => res[n] = labels[i] + accidental( - mod12(NOTES_INV[labels[i]] - n )) );
+
+	for (let i = 0; i < 12; i++) {
+      if (res[i]) continue;
+
+	  if (NOTES[i].length == 1) {
+		res[i] = NOTES[i];
+		continue;
+	  }
+
+      let j = mod12(i + 1);
+      while (res[j] === null) {
+        j = mod12(j+1);
+      }
+
+      res[i] = res[j] + accidental(-mod12(j-i));
+    }
+	return res;
   }
 
-  transpose(n) {
-	return new Scale(this.name, this.notes.map( s => (s+n) % 12 ));
+  #compute_labels_sharps(labels) {
+
+	const res = new Array(12).fill(null);
+	this.notes.forEach((n,i) => res[n] = labels[i] + accidental( mod12(n - NOTES_INV[labels[i]] )) );
+
+	for (let i = 0; i < 12; i++) {
+      if (res[i]) continue;
+
+	  if (NOTES[i].length == 1) {
+		res[i] = NOTES[i];
+		continue;
+	  }
+
+      let j = mod12(i - 1);
+      while (res[j] === null) {
+        j = mod12(j-1);
+      }
+
+      res[i] = res[j] + accidental(mod12(i-j));
+    }
+	return res;
   }
+
 
   interval_number(n) {
 	const i = this.notes.indexOf(n);
 	if (i == -1) return '';
 
-	const interval = (12+this.notes[i]-this.notes[0])%12;
+	const interval = mod12(this.notes[i]-this.root);
 	const diff = MODES['Ionian / Major'].notes[i] - interval;
-	if (diff < 0) return '♯'.repeat(-diff) + (i+1);
-	if (diff > 0) return '♭'.repeat(diff) + (i+1);
-	return ''+(i+1);
-
+	return accidental(diff) + (i+1);
   }
 
   label(n) {
-	return NOTES[n];
+	return this.labels[n];
   }
 
   chord(degree) {
-	return new Chord([0,2,4].map(d => this.notes[(degree+d)%this.notes.length]));
+	return new Chord(this, [0,2,4].map(d => this.notes[(degree+d)%this.notes.length]));
   }
 }
 
 const MODES = Object.fromEntries([
-  Scale.fromSteps("Lydian", "WWWHWWH"),
-  Scale.fromSteps("Ionian / Major", "WWHWWWH"), // major
-  Scale.fromSteps("Mixolydian", "WWHWWHW"),
-  Scale.fromSteps("Dorian", "WHWWWHW"),
-  Scale.fromSteps("Aeolian / Minor", "WHWWHWW"), // natural minor
-  Scale.fromSteps("Phrygian", "HWWWHWW"),
-  Scale.fromSteps("Locrian", "HWWHWWW"),
+  new Mode("Lydian", "WWWHWWH"),
+  new Mode("Ionian / Major", "WWHWWWH"), // major
+  new Mode("Mixolydian", "WWHWWHW"),
+  new Mode("Dorian", "WHWWWHW"),
+  new Mode("Aeolian / Minor", "WHWWHWW"), // natural minor
+  new Mode("Phrygian", "HWWWHWW"),
+  new Mode("Locrian", "HWWHWWW"),
 
 ].map( s => [s.name, s]));
 
@@ -345,4 +421,4 @@ const INSTRUMENTS = Object.fromEntries([
   new Instrument('Banjo Open C', [0, 7, 0, 4]), // CGCE
 ].map( i => [i.name, i]));
 
-export { Chord, Finger, Instrument, NOTES, TRIADS, MODES, INSTRUMENTS, CIRCLE_OF_FIFTHS, interval_quality, interval_number };
+export { Chord, Finger, Instrument, NOTES, NOTES_FLAT, NOTES_INV, TRIADS, MODES, INSTRUMENTS, CIRCLE_OF_FIFTHS, interval_quality };

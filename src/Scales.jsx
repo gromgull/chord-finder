@@ -1,8 +1,9 @@
 import { createSignal, createEffect, createMemo, on } from "solid-js";
+import { useParams } from "@solidjs/router";
 
 import styles from './App.module.css';
 
-import { Finger, MODES, NOTES } from './mt';
+import { Finger, MODES, NOTES, NOTES_FLAT, NOTES_INV } from './mt';
 
 import { options } from './Settings';
 
@@ -39,7 +40,7 @@ function ChordVariations({scale, degree}) {
 	<div class={styles.chordblock}>
 	  <h3><Roman degree={degree} type={chord().type}/>{chord().label}</h3>
 	  <div>
-		<span>{chord().notes.map(n => NOTES[n]).join(' - ')}</span>
+		<span>{chord().notes.map(n => scale().label(n)).join(' - ')}</span>
 		<ChordDiagram instrument={options().instrument} fingering={fingering} no_frets={5} />
 		<div class={styles.controls}>
 		  <button disabled={n()==0} onClick={() => setN(n()-1)}>❮</button>
@@ -52,18 +53,23 @@ function ChordVariations({scale, degree}) {
 }
 
 function Scales() {
-
-  const [root, setRoot] = createSignal(0);
+  const params = useParams();
 
   const [mode, setMode] = createSignal(MODES['Ionian / Major']);
 
-  const scale = () => mode().transpose(root());
+  const [flat, setFlat] = createSignal(false);
+
+  // bug in solid-js means unicode ends up as utf8 code points in params
+  const scale = createMemo(() => mode().createScale(params.key.replace('%E2%99%AD', '♭').replace('%E2%99%AF','♯')));
+  console.log(params.key);
+  const notes = () => flat() ? NOTES_FLAT : NOTES;
+
   const fingering = () => options().instrument.fingering(scale(), 9);
 
   return (
 	<>
 	  <Portal mount={document.querySelector('header')}>
-		<h1 class={styles.onlyPrint}>{NOTES[root()]} {mode().name}</h1>
+		<h1 class={styles.onlyPrint}>{scale().label(scale().notes[0])} {mode().name}</h1>
 	  </Portal>
 
 	  <fieldset>
@@ -71,10 +77,6 @@ function Scales() {
 		<select value={mode().name} onChange={e => setMode(MODES[e.currentTarget.value])}>
 		  { Object.keys(MODES).map(i => <option value={i}>{i}</option>) }
 		</select><br/>
-		<label>Key</label>
-		{ Object.values(NOTES).map((n, i) =>
-		  <button classList={{[styles.active]: i==root()}} onClick={() => setRoot(i)}>{n}</button>
-		)}
 	  </fieldset>
 
       <Circle

@@ -15,7 +15,7 @@ function Circle({ scale, mode }) {
   const o = 0;
   const text2r = 0.75;
 
-  const outer = ['C', 'G', 'D', 'A', 'E', 'B', 'F♯', 'D♭', 'A♭', 'E♭', 'B♭', 'F'];
+  const outer = createMemo(() => CIRCLE_OF_FIFTHS.map( i => scale().label(i)));
 
   const inner = createMemo(() => CIRCLE_OF_FIFTHS.map( i => scale().interval_number(i) ));
 
@@ -24,14 +24,18 @@ function Circle({ scale, mode }) {
   return (
     <svg width="300" height="300" viewBox="-100 -100 200 200">
       { [...Array(12).keys()].map( i =>
-        <path fill={colors()[i]} stroke="white" stroke-width="4" d={`M ${r} 0 H 100 A 100 100 0 0 1 ${100*y} ${100*x} L ${r*y} ${r*x} A 100 100 0 0 0 ${r} 0`} transform={`rotate(${-105+i*30})`}/>
+        <g>
+          <a href={`/scales/${outer()[i]}/Major`}>
+            <path fill={colors()[i]} stroke="white" stroke-width="4" d={`M ${r} 0 H 100 A 100 100 0 0 1 ${100*y} ${100*x} L ${r*y} ${r*x} A 100 100 0 0 0 ${r} 0`} transform={`rotate(${-105+i*30})`}/>
+          </a>
+        </g>
       )}
       { [...Array(12).keys()].map( i =>
         <path fill={colors()[i]} stroke="white" stroke-width="4" d={`M ${r2} 0 H ${r-o} A ${r-o} ${r-o} 0 0 1 ${(r-o)*y} ${(r-o)*x} L ${r2*y} ${r2*x} A ${r-o} ${r-o} 0 0 0 ${r2} 0`} transform={`rotate(${-105+i*30})`}/>
       )}
 
       { [...Array(12).keys()].map( i =>
-        <text fill="white" dominant-baseline="middle" text-anchor="middle" x={(r+(100-r)/2)*Math.sin(i*30*Math.PI/180)} y={-(r+(100-r)/2)*Math.cos(i*30*Math.PI/180)} >{outer[i]}</text>
+        <text text-decoration={ CIRCLE_OF_FIFTHS[i] == scale().notes[0] ? 'underline' : '' } pointer-events="none" fill="white" dominant-baseline="middle" text-anchor="middle" x={(r+(100-r)/2)*Math.sin(i*30*Math.PI/180)} y={-(r+(100-r)/2)*Math.cos(i*30*Math.PI/180)} >{outer()[i]}</text>
       )}
       { [...Array(12).keys()].map( i =>
         <text font-size="70%" fill="white" dominant-baseline="middle" text-anchor="middle" x={(r*text2r)*Math.sin(i*30*Math.PI/180)} y={1+-(r*text2r)*Math.cos(i*30*Math.PI/180)} >{inner()[i]}</text>

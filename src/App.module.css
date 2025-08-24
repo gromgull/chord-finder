@@ -329,3 +329,8 @@ label {
   padding: 3px;
   line-height: normal;
 }
+
+svg|a:link,
+svg|a:visited {
+  cursor: pointer;
+}
