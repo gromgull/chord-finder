@@ -336,47 +336,17 @@ class Scale {
 
   #compute_labels_flats(labels) {
 
-	const res = new Array(12).fill(null);
+	const res = [ ...NOTES_FLAT ];
 	this.notes.forEach((n,i) => res[n] = labels[i] + accidental( - mod12(NOTES_INV[labels[i]] - n )) );
 
-	for (let i = 0; i < 12; i++) {
-      if (res[i]) continue;
-
-	  if (NOTES[i].length == 1) {
-		res[i] = NOTES[i];
-		continue;
-	  }
-
-      let j = mod12(i + 1);
-      while (res[j] === null) {
-        j = mod12(j+1);
-      }
-
-      res[i] = res[j] + accidental(-mod12(j-i));
-    }
 	return res;
   }
 
   #compute_labels_sharps(labels) {
 
-	const res = new Array(12).fill(null);
+	const res = [ ... NOTES ];
 	this.notes.forEach((n,i) => res[n] = labels[i] + accidental( mod12(n - NOTES_INV[labels[i]] )) );
 
-	for (let i = 0; i < 12; i++) {
-      if (res[i]) continue;
-
-	  if (NOTES[i].length == 1) {
-		res[i] = NOTES[i];
-		continue;
-	  }
-
-      let j = mod12(i - 1);
-      while (res[j] === null) {
-        j = mod12(j-1);
-      }
-
-      res[i] = res[j] + accidental(mod12(i-j));
-    }
 	return res;
   }
 
