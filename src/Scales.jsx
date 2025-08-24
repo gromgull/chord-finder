@@ -1,5 +1,5 @@
 import { createSignal, createEffect, createMemo, on } from "solid-js";
-import { useParams } from "@solidjs/router";
+import { useParams, useNavigate } from "@solidjs/router";
 
 import styles from './App.module.css';
 
@@ -54,13 +54,17 @@ function ChordVariations({scale, degree}) {
 
 function Scales() {
   const params = useParams();
+  const navigate = useNavigate();
 
-  const [mode, setMode] = createSignal(MODES['Ionian / Major']);
+  const [mode, setMode] = createSignal(MODES[params.mode || 'Major']);
 
   const [flat, setFlat] = createSignal(false);
 
   // bug in solid-js means unicode ends up as utf8 code points in params
-  const scale = createMemo(() => mode().createScale(params.key.replace('%E2%99%AD', '♭').replace('%E2%99%AF','♯')));
+  const scale = createMemo(() => mode().createScale((params.key || 'C').replace('%E2%99%AD', '♭').replace('%E2%99%AF','♯')));
+
+  createEffect( () => navigate(`/scales/${params.key}/${mode().short_name}`) );
+
   console.log(params.key);
   const notes = () => flat() ? NOTES_FLAT : NOTES;
 
@@ -74,8 +78,8 @@ function Scales() {
 
 	  <fieldset>
 		<label>Mode</label>
-		<select value={mode().name} onChange={e => setMode(MODES[e.currentTarget.value])}>
-		  { Object.keys(MODES).map(i => <option value={i}>{i}</option>) }
+		<select value={mode().short_name} onChange={e => setMode(MODES[e.currentTarget.value])}>
+		  { Object.keys(MODES).map(i => <option value={i}>{MODES[i].name}</option>) }
 		</select><br/>
 	  </fieldset>
 

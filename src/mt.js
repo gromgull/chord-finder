@@ -290,6 +290,7 @@ class Mode {
 	steps = [...steps];
 	steps.pop();
 	this.name = name;
+	this.short_name = name.replace(/.*\/ /, '');
 	this.notes = [0, ...steps.map(s => {
 	  n = (n + STEP[s]) % 12;
 	  return n;
@@ -356,7 +357,7 @@ class Scale {
 	if (i == -1) return '';
 
 	const interval = mod12(this.notes[i]-this.root);
-	const diff = MODES['Ionian / Major'].notes[i] - interval;
+	const diff = MODES['Major'].notes[i] - interval;
 	return accidental(diff) + (i+1);
   }
 
@@ -378,7 +379,7 @@ const MODES = Object.fromEntries([
   new Mode("Phrygian", "HWWWHWW"),
   new Mode("Locrian", "HWWHWWW"),
 
-].map( s => [s.name, s]));
+].map( s => [s.short_name, s]));
 
 
 const INSTRUMENTS = Object.fromEntries([
