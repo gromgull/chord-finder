@@ -6,7 +6,21 @@
 
   .content {
 	padding: 10px;
-	padding-top: 80px;
+	padding-top: 20px;
+  }
+
+  .scale svg {
+	margin: 0 auto;
+	display: block;
+  }
+
+  .chordRoots {
+	margin-bottom: 10px;
+  }
+
+  .chordRoots button {
+	margin: 0;
+	width: 16%;
   }
 }
 
@@ -108,7 +122,7 @@
 
 
 .active {
-  background: cornflowerblue;
+  background: cornflowerblue !important;
 }
 
 .chordblock {

@@ -56,7 +56,7 @@ function App(props) {
 
 render(() => <HashRouter root={App}>
     <Route path={['/scales', '/scales/:key/:mode']} component={Scales} />
-    <Route path="/chords" component={Chords} />
+    <Route path="/chords/:chord?" component={Chords} />
     <Route path="/settings" component={Settings} />
     <Route path="/instrument" component={InstrumentEditor} />
 
