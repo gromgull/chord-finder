@@ -61,7 +61,7 @@ function Scales() {
   const [flat, setFlat] = createSignal(false);
 
   // bug in solid-js means unicode ends up as utf8 code points in params
-  const scale = createMemo(() => mode().createScale((params.key || 'C').replace('%E2%99%AD', '♭').replace('%E2%99%AF','♯')));
+  const scale = createMemo(() => mode().createScale((params.key || 'C').replaceAll('%E2%99%AD', '♭').replaceAll('%E2%99%AF','♯')));
 
   createEffect( () => navigate(`/scales/${params.key || 'C' }/${mode().short_name}`) );
 
